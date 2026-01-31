@@ -1,0 +1,902 @@
+---
+title: "single_cell_analysis_figures"
+author: "Shuto Ikeda"
+date: "25/1/2026"
+output: .png, .svg
+---
+
+```{r setting}
+# Clear global workspace
+rm( list = ls( envir = globalenv() ), envir = globalenv() )
+
+library("ggthemes")
+library("tidyverse")
+library("patchwork")
+library("export")
+library("e1071")
+library("scales")
+library("RColorBrewer")
+library("zoo")
+library("plotly")
+library("dplyr")
+library("ggpmisc")
+library("ggh4x")
+```
+
+```{r }
+file = "../1_fit_summarize_rawdata/processed_data/5_summary_data_exponential.csv"
+summarize_data <- read.csv(file, header = TRUE)
+summarize_data_G0 <- summarize_data %>% filter(generation_count == 0)
+summarize_data_Gn <- summarize_data %>% filter(generation_count != 0)
+
+file_2 = "../1_fit_summarize_rawdata/processed_data/3_biomass_data.csv"
+biomass_data <- read.csv(file_2, header = TRUE)
+biomass_data_mutate <- 
+  biomass_data %>% 
+  group_by(Specie, Condition, replicate, Time) %>% 
+  filter(n_distinct(FOV) == 3) %>% 
+  summarise(mean_mean_elongation_rateb = mean(mean_elongation_rate, na.rm = TRUE),
+            sd_elongation_rate = sd(mean_elongation_rate, na.rm = TRUE),
+            mean_um2_biomass = mean(um2_biomass, na.rm = TRUE),
+            sd_um2_biomass = sd(um2_biomass, na.rm = TRUE),
+            mean_um3_biomass_production_density = mean(um3_biomass_production_density, na.rm = TRUE),
+            sd_um3_biomass_production_density = sd(um3_biomass_production_density, na.rm = TRUE),
+            )
+
+file_3 = "../1_fit_summarize_rawdata/processed_data/6_daughter_cell_pair.csv"
+daughter_cell_pair <- read.csv(file_3, header = TRUE)
+```
+
+```{r theme}
+# define mytheme
+mytheme_paper <- 
+  theme(text = element_text(family = "Helvetica", size=8, color = "black"),
+        plot.title = element_text(family = "Helvetica", size=9.5, color = "black", face = "bold",
+                                  vjust = 1, hjust = 0),
+        axis.title.x = element_text(family = "Helvetica", size=8, color = "black",
+                                    margin = margin(t = 5)),
+        axis.title.y = element_text(family = "Helvetica", size=8, color = "black", angle = 90,
+                                    margin = margin(r = 5)),
+        axis.text.x = element_text(family = "Helvetica", size=6.5, color = "black", vjust = 0.5),
+        axis.text.y = element_text(family = "Helvetica", size=6.5, color = "black", hjust = 0.5),
+        strip.text.x = element_text(family = "Helvetica", size=8, color = "black"),
+        strip.text.y = element_text(family = "Helvetica", size=8, color = "black", angle = -90),
+        strip.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        legend.position = "None",
+        legend.background = element_blank(),
+        legend.key = element_blank(),
+        legend.title = element_blank(),
+        panel.background =  element_rect(fill = "transparent", colour = "black"),
+        panel.grid.major = element_line(colour = "transparent"),
+        panel.grid.minor = element_line(colour = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = "transparent"),
+        plot.tag = element_text(family = "Helvetica", size = 12, face = "bold", color = "black"))
+
+theme_set(mytheme_paper)
+```
+
+```{r }
+# define Scientific notation
+labeli <- as_labeller(c(
+  europaea = "italic('N. europaea')",
+  PY1 = "italic('Nitrosomonas')~'sp. PY1'",
+  `10^5` = "10^5~'cells/mL'",
+  `10^3` = "10^3~'cells/mL'",
+  `10^1` = "10^1~'cells/mL'",
+  `10^0` = "10^0~'cells/mL'",
+  `supernatant` = "'CFS+'",
+  `no-supernatant` = "'CFS-'",
+  `supernatant 10%` = "'CFS+'",
+  `supernatant 0%` = "'CFS-'",
+  `catalase-` = "'CFS 0%,'~'catalase-'",
+  `1` = "'N = 1'",
+  `2` = "'N = 2'",
+  `3` = "'N = 3'",
+  `Cat+` = "'supernatant 0%'",
+  `Cat-` = "'supernatant 0%,'~'catalase-'"
+), default = label_parsed)
+
+folder_path = "./result/"
+if (!dir.exists(folder_path)) {
+  dir.create(folder_path, recursive = TRUE)
+}
+
+label_vec <- c(
+  `10^5` = "10^5",
+  `10^3` = "10^3",
+  `10^1` = "10^1"
+)
+
+my_colors <- c("PY1" = "salmon", "europaea" = "royalblue",
+               "PY1.1" = "lightsalmon", "PY1.2" = "salmon", "PY1.3" = "salmon4",
+               "europaea.1" = "lightblue", "europaea.2" = "royalblue1", "europaea.3" = "navy"
+               )
+my_shapes <- c("1" = 21, "2" = 22, "3" = 24)
+
+# set order
+biomass_data$Specie <- factor(biomass_data$Specie, levels = c("PY1", "europaea"))
+biomass_data$Condition <- factor(biomass_data$Condition, levels = c("no-supernatant", "supernatant")) 
+daughter_cell_pair$Specie <- factor(daughter_cell_pair$Specie, levels = c("PY1", "europaea"))
+daughter_cell_pair$Condition <- factor(daughter_cell_pair$Condition, levels = c("no-supernatant", "supernatant", "supernatant 10%", "supernatant 0%")) 
+```
+
+# time vs biomass
+```{r }
+plot_time_vs_biomass_mergeRep <- function(data, specie){
+  data = data
+  
+  if(nrow(data) == 0){
+    message(glue("Skipping: No data"))
+    return(NULL)
+  }
+  
+  data <- data %>%
+    mutate(rep_key = interaction(Specie, as.character(replicate), sep="."))
+  
+  time_vs_biomass_mergeRep <-
+    ggplot(data,
+           aes(x = Time, y = um2_biomass, 
+               group = interaction(rep_key, as.character(FOV))
+               )) +
+    
+    geom_line(aes(color = rep_key),
+              alpha = 0.6, linewidth = 0.4) +  
+    geom_point(aes(fill = rep_key,
+                   shape = as.factor(replicate) 
+                     ),
+               size = 1.0, alpha = 0.6, 
+               color = "black", stroke = 0.4) +
+    
+    scale_color_manual(values = my_colors) +
+    scale_fill_manual(values = my_colors) +
+    scale_shape_manual(values = my_shapes) +
+    
+    labs(
+      x = "Time (h)", 
+      y = expression(paste( "Total biomass area (", " ", mu, "m"^2, ")" ))
+         ) 
+}
+ 
+specie_list = c("europaea", "PY1")
+biomass_plots <- list()
+
+for (specie in specie_list){
+  data = subset(biomass_data, Condition != "supernatant" & Specie == specie) 
+  biomass_plot <- 
+    plot_time_vs_biomass_mergeRep(na.omit(data))
+  
+  base_name <- "(exstra)_time_vs_biomass"
+  
+  biomass_plot <- biomass_plot+mytheme_paper
+  biomass_plots[[specie]] <- biomass_plot
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
+         plot = biomass_plot, width = 2.4, height = 2.4, units = "in", device = "svg")
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
+         plot = biomass_plot, width = 2.4, height = 2.4, units = "in", device = "png", dpi = 600)
+}
+```
+
+```{r }
+specie_list = c("PY1")
+biomass_plots_CFS <- list()
+
+for (specie in specie_list){
+  data = subset(biomass_data, Condition == "supernatant" & Specie == specie) 
+  biomass_plot <- 
+    plot_time_vs_biomass_mergeRep(na.omit(data))
+  
+  base_name <- "(exstra)_time_vs_biomass_CFS"
+  
+  biomass_plot <- biomass_plot+mytheme_paper
+  biomass_plots_CFS[[specie]] <- biomass_plot
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
+         plot = biomass_plot, width = 2.4, height = 2.4, units = "in", device = "svg")
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
+         plot = biomass_plot, width = 2.4, height = 2.4, units = "in", device = "png", dpi = 600)
+}
+```
+
+# time vs average elogation rate
+```{r ）}
+plot_time_vs_meanElongationRate_mergeRep <- function(data){
+  data = data
+  
+  if(nrow(data) == 0){
+    message(glue("Skipping: No data"))
+    return(NULL)
+  }
+  
+  data <- data %>%
+    mutate(rep_key = interaction(Specie, as.character(replicate), sep="."))
+  
+  time_vs_meanElongationRate_mergeRep <-
+    ggplot(data,
+           aes(x = Time, y = mean_elongation_rate, 
+               group = interaction(rep_key, as.character(FOV))
+               )) +
+    
+    geom_line(aes(color = rep_key),
+              alpha = 0.6, linewidth = 0.4) +  
+    geom_point(aes(fill = rep_key,
+                   shape = as.factor(replicate) 
+                     ),
+               size = 1.0, alpha = 0.6, 
+               color = "black", stroke = 0.4) +
+    
+    scale_color_manual(values = my_colors) +
+    scale_fill_manual(values = my_colors) +
+    scale_shape_manual(values = my_shapes) +
+    
+    labs(
+      x = "Time (h)", 
+      y = expression(paste( "Mean elongation rate (", "h"^-1, ")" ))
+         ) 
+
+}
+ 
+specie_list = c("europaea", "PY1")
+elongation_rate_plots <- list()
+
+for (specie in specie_list){
+  data = subset(biomass_data, Condition != "supernatant" & Specie == specie) 
+  elongation_rate_plot <- 
+    plot_time_vs_meanElongationRate_mergeRep(na.omit(data))
+  
+  base_name <- "(exstra)_time_vs_meanElongationRate"
+  
+  elongation_rate_plot <- elongation_rate_plot+mytheme_paper
+  elongation_rate_plots[[specie]] <- elongation_rate_plot
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
+         plot = elongation_rate_plot, width = 2.4, height = 2.4, units = "in", device = "svg")
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
+         plot = elongation_rate_plot, width = 2.4, height = 2.4, units = "in", device = "png", dpi = 600)
+}
+```
+
+```{r }
+specie_list = c("PY1")
+elongation_rate_plots_CFS <- list()
+
+for (specie in specie_list){
+  data = subset(biomass_data, Condition == "supernatant" & Specie == specie) 
+  elongation_rate_plot <- 
+    plot_time_vs_meanElongationRate_mergeRep(na.omit(data))
+  
+  base_name <- "(exstra)_time_vs_meanElongationRate_CFS"
+  
+  elongation_rate_plot <- elongation_rate_plot+mytheme_paper
+  elongation_rate_plots_CFS[[specie]] <- elongation_rate_plot
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
+         plot = elongation_rate_plot, width = 2.4, height = 2.4, units = "in", device = "svg")
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
+         plot = elongation_rate_plot, width = 2.4, height = 2.4, units = "in", device = "png", dpi = 600)
+}
+```
+
+# time vs deltaVt
+```{r }
+plot_time_vs_biomassProduction_mergeRep <- function(data){
+  data = data
+  
+  if(nrow(data) == 0){
+    message(glue("Skipping: No data"))
+    return(NULL)
+  }
+  
+  data <- data %>%
+    mutate(rep_key = interaction(Specie, as.character(replicate), sep="."))
+  
+  time_vs_biomassProduction_mergeRep <-
+    ggplot(data,
+           aes(x = Time, y = um3_biomass_production_density, 
+               group = interaction(rep_key, as.character(FOV))
+               )) +
+    
+    geom_line(aes(color = rep_key),
+              alpha = 0.6, linewidth = 0.4) +  
+    geom_point(aes(fill = rep_key,
+                   shape = as.factor(replicate) 
+                     ),
+               size = 1.0, alpha = 0.6, 
+               color = "black", stroke = 0.4) +
+    
+    scale_color_manual(values = my_colors) +
+    scale_fill_manual(values = my_colors) +
+    scale_shape_manual(values = my_shapes) +
+    
+    scale_y_continuous(
+      labels = label_number(scale = 1e-6),
+      expand = expansion(mult = c(0.05, 0.05))
+    ) +
+    
+    labs(
+      x = "Time (h)", 
+      y = expression(
+        Delta * italic(V[t]) ~ " (" %*% "10"^6 ~ mu * "m"^3 ~ "mL"^-1 * ")"
+        )
+      )
+
+}
+ 
+specie_list = c("europaea", "PY1")
+deltaVt_plots <- list()
+
+for (specie in specie_list){
+  data = subset(biomass_data, Condition != "supernatant" & Specie == specie) 
+  deltaVt_plot <- 
+    plot_time_vs_biomassProduction_mergeRep(na.omit(data))
+  
+  base_name <- "(exstra)_time_vs_meanElongationRate"
+  
+  deltaVt_plot <- deltaVt_plot+mytheme_paper
+  deltaVt_plots[[specie]] <- deltaVt_plot
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
+         plot = deltaVt_plot, width = 2.4, height = 2.4, units = "in", device = "svg")
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
+         plot = deltaVt_plot, width = 2.4, height = 2.4, units = "in", device = "png", dpi = 600)
+}
+```
+
+```{r }
+specie_list = c("PY1")
+deltaVt_plots_CFS <- list()
+
+for (specie in specie_list){
+  data = subset(biomass_data, Condition == "supernatant" & Specie == specie) 
+  deltaVt_plot <- 
+    plot_time_vs_biomassProduction_mergeRep(na.omit(data))
+  
+  base_name <- "(exstra)_time_vs_meanElongationRate_CFS"
+  
+  deltaVt_plot <- deltaVt_plot+mytheme_paper
+  deltaVt_plots_CFS[[specie]] <- deltaVt_plot
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
+         plot = deltaVt_plot, width = 2.4, height = 2.4, units = "in", device = "svg")
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
+         plot = deltaVt_plot, width = 2.4, height = 2.4, units = "in", device = "png", dpi = 600)
+}
+```
+
+```{r }
+library(patchwork)
+figS1 <- (
+  (biomass_plots[["PY1"]] / elongation_rate_plots[["PY1"]] / deltaVt_plots[["PY1"]] ) | 
+    (biomass_plots[["europaea"]] / elongation_rate_plots[["europaea"]] / deltaVt_plots[["europaea"]]) 
+  )+
+  plot_annotation(tag_levels = 'A')
+base_name = "figS1"
+
+# save
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       figS1, width = 6.4, height = 7.2, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       figS1, width = 6.4, height = 7.2, units = "in", device = "png", dpi = 600)
+```
+
+```{r }
+library(patchwork)
+figS2 <- (
+  ( biomass_plots_CFS[["PY1"]] / elongation_rate_plots_CFS[["PY1"]] / deltaVt_plots_CFS[["PY1"]] ) 
+  )+
+  plot_annotation(tag_levels = 'A')
+base_name = "figS2"
+
+# save
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       figS2, width = 3.2, height = 7.2, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       figS2, width = 3.2, height = 7.2, units = "in", device = "png", dpi = 600)
+```
+
+# cell tragectory
+# deltaVt vs generation time
+```{r }
+plot_biomassProduction_vs_generationTime_mergeRep <- function(data){
+  data = data 
+  
+  if(nrow(data) == 0){
+    message(glue("Skipping: No data"))
+    return(NULL)
+  }
+  
+  # --- max, min, r ---
+  limits <- data %>%
+    summarise(
+      y_min = min(generation_time, na.rm = TRUE),
+      y_max = max(generation_time, na.rm = TRUE),
+      x_label = 1.5 * 10^6,
+      y_label = 115,
+      r = cor(um3_biomass_production_density_start, generation_time, method = "pearson"),
+      .groups = "drop"
+    )
+
+  # --- plot ---
+  biomassProduction_vs_generationTime_mergeRep <-
+    ggplot() +
+    geom_point(data = data, 
+               aes(x = um3_biomass_production_density_start,
+                   y = generation_time,
+                   fill = Specie,
+                   ),
+               shape = 21,
+               color = "black", size = 2.5, alpha = 0.6, stroke = 0.5) +
+    
+    # linear regression
+    geom_smooth(data = data,
+                aes(x = um3_biomass_production_density_start,
+                    y = generation_time, 
+                    group = Specie),
+                method = "lm", se = FALSE, color = "black") +
+    
+    # max, min
+    geom_hline(data = limits, aes(yintercept = y_max), linetype = "dashed") +
+    geom_hline(data = limits, aes(yintercept = y_min), linetype = "dashed") +
+    
+    # label
+    geom_text(data = limits,
+              aes(x = x_label * 0.95,
+                  y = y_label * 0.95,
+                  label = paste0(
+                    "Max = ", sprintf("%.1f", y_max),
+                    "\nMin = ", sprintf("%.1f", y_min),
+                    "\nr = ", sprintf("%.2f", r)
+                    )),
+              inherit.aes = FALSE,
+              color = "black",
+              hjust = 1,
+              vjust = 1,
+              size = 2.5) +
+    
+    scale_fill_manual(values = my_colors) + 
+    scale_x_continuous(
+      breaks = seq(0, 1.5 * 10^6, by = 5 * 10^5),
+      limits = c(0, 1.5 * 10^6),
+      labels = label_number(scale = 10^-6)) +
+    scale_y_continuous(breaks = seq(0, 120, by = 30),
+                       limits = c(0, 120)) +
+    labs(
+      x = expression(
+        Delta * italic(V[t]) ~ " (" %*% "10"^6 ~ mu * "m"^3 ~ "mL"^-1 * ")"
+        ),
+      y = expression(paste("Generation time, ", italic("T"), " (h)"))
+      ) 
+  }
+
+specie_list = c("europaea", "PY1")
+Gtime_noSup_plots <- list()
+
+for (specie in specie_list){
+  plot_noSup <- 
+    plot_biomassProduction_vs_generationTime_mergeRep(
+      subset(summarize_data_Gn, Condition == "no-supernatant" & Specie == specie)
+      )
+  
+  base_name <- "fig2AD_biomassProduction_vs_generationTime_noSup"
+  
+  Gtime_noSup <- plot_noSup+mytheme_paper
+  Gtime_noSup_plots[[specie]] <- Gtime_noSup
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
+         plot = Gtime_noSup, width = 3.2, height = 2.4, units = "in", device = "svg")
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
+         plot = Gtime_noSup, width = 3.2, height = 2.4, units = "in", device = "png", dpi = 600)
+}
+```
+
+```{r }
+plot_sup <- 
+  plot_biomassProduction_vs_generationTime_mergeRep(
+    subset(summarize_data_Gn, Condition == "supernatant")
+    )
+
+base_name <- "fig3B_biomassProduction_vs_generationTime_sup"
+
+Gtime_sup <- plot_sup+mytheme_paper
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       plot = Gtime_sup,
+       width = 3.2, height = 2.4, units = "in", device = "svg", dpi = 600)
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       plot = Gtime_sup,
+       width = 3.2, height = 2.4, units = "in", device = "png", dpi = 600)
+```
+
+# deltaVt vs elongation rate
+```{r }
+plot_biomassProduction_vs_elongation_speed_mergeRep <- function(data){
+  data = data 
+  
+  if(nrow(data) == 0){
+    message(glue("Skipping: No data"))
+    return(NULL)
+  }
+  
+  corrs <- data %>%
+    group_by(Specie) %>%
+    summarise(r = cor(um3_biomass_production_density_start, fitted_elongation_rate, method = "pearson"),
+              x_pos = 1.5 * 10^6,
+              y_pos = 0.01,
+              .groups = "drop")
+
+  biomassProduction_vs_elongation_speed_mergeRep <-
+    ggplot() +
+    geom_point(data = data,
+               aes(x = um3_biomass_production_density_start,
+                   y = fitted_elongation_rate,
+                   fill = Specie
+                   ),
+               shape = 21,
+               size = 2.5, alpha = 0.6, color = "black", stroke = 0.5
+               ) +
+    
+    # linear regression
+    geom_smooth(data = data,
+                aes(x = um3_biomass_production_density_start,
+                    y = fitted_elongation_rate, 
+                    group = Specie),
+                method = "lm", se = FALSE, color = "black") +
+    
+    # label
+    geom_text(data = corrs,
+              aes(x = x_pos * 0.95, 
+                  y = y_pos * 0.95,
+                  label = paste0(
+                    "r = ", sprintf("%.2f", r)
+                    )),
+              inherit.aes = FALSE,
+              color = "black",
+              hjust = 1,
+              vjust = 1,
+              size = 2.5) +
+    
+    scale_fill_manual(values = my_colors) +
+    scale_x_continuous(breaks = seq(0, 1.5 * 10^6, by = 5 * 10^5),
+                       limits = c(0, 1.5 * 10^6),
+                       labels = label_number(scale = 10^-6)) +
+    scale_y_continuous(breaks = seq(0, 0.12, by = 0.03),
+                       limits = c(0, 0.12)) +
+    labs(
+      x = expression(
+        Delta * italic(V[t]) ~ " (" %*% "10"^6 ~ mu * "m"^3 ~ "mL"^-1 * ")"
+        ),
+      y = expression(paste("Elongation rate, ", alpha, " (h"^-1, ")"))
+      ) 
+}
+ 
+specie_list = c("europaea", "PY1")
+ElongationRate_noSup_plots <- list()
+
+for (specie in specie_list){
+  plot_noSup <- 
+    plot_biomassProduction_vs_elongation_speed_mergeRep(
+      subset(summarize_data_Gn, Condition == "no-supernatant" & Specie == specie)
+      )
+  
+  base_name <- "fig2BE_biomassProduction_vs_elongationRate_noSup"
+  
+  ElongationRate_noSup <- plot_noSup+mytheme_paper
+  ElongationRate_noSup_plots[[specie]] <- ElongationRate_noSup
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
+         plot = ElongationRate_noSup, width = 3.2, height = 2.4, units = "in", device = "svg")
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
+         plot = ElongationRate_noSup, width = 3.2, height = 2.4, units = "in", device = "png", dpi = 600)
+}
+```
+
+```{r }
+plot_sup <-
+  plot_biomassProduction_vs_elongation_speed_mergeRep(
+    subset(summarize_data_Gn, Condition == "supernatant")
+    ) 
+
+base_name <- "fig3C_biomassProduction_vs_elongationRate_sup"
+
+ElongationRate_sup <- plot_sup+mytheme_paper
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       plot = ElongationRate_sup,
+       width = 3.2, height = 2.4, units = "in", device = "svg", dpi = 600)
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       plot = ElongationRate_sup,
+       width = 3.2, height = 2.4, units = "in", device = "png", dpi = 600)
+
+```
+
+# deltaVt vs deltaA
+```{r }
+plot_biomassProduction_vs_area_elongation_mergeRep <- function(data){
+  data = data
+  
+  if(nrow(data) == 0){
+    message(glue("Skipping: No data"))
+    return(NULL)
+  }
+  
+  corrs <- data %>%
+    group_by(Specie) %>%
+    summarise(r = cor(um3_biomass_production_density_start, fitted_deltaA, method = "pearson"),
+              x_pos = 1.5 * 10^6, 
+              y_pos = 1.5,
+              .groups = "drop")
+  
+  biomassProduction_vs_area_elongation_mergeRep <-
+    ggplot() +
+    geom_point(data = data,
+               aes(x = um3_biomass_production_density_start, 
+                   y = fitted_deltaA, 
+                   fill = as.factor(Specie),
+                   ),
+               shape = 21,
+               color = "black", size = 2.5, alpha = 0.6, stroke = 0.5
+               ) +
+    
+    # linear regression
+    geom_smooth(data = data,
+                aes(x = um3_biomass_production_density_start,
+                    y = fitted_deltaA, 
+                    group = Specie),
+                method = "lm", se = FALSE, color = "black") +
+    
+    # label
+    geom_text(data = corrs,
+              aes(x = x_pos * 0.95, 
+                  y = y_pos * 0.95,
+                  label = paste0(
+                    "r = ", sprintf("%.2f", r)
+                    )),
+              inherit.aes = FALSE,
+              color = "black",
+              hjust = 1,
+              vjust = 1,
+              size = 2.5) +
+    
+    scale_fill_manual(values = my_colors) +
+    scale_x_continuous(
+      breaks = seq(0, 1.5 * 10^6, by = 5 * 10^5),
+      limits = c(0, 1.5 * 10^6),
+      labels = label_number(scale = 10^-6)) +
+    scale_y_continuous(
+      breaks = seq(0, 2.5, by = 0.5),
+      limits = c(0, 2.5)) +
+    labs(
+      x = expression(
+        Delta * italic(V[t]) ~ " (" %*% "10"^6 ~ mu * "m"^3 ~ "mL"^-1 * ")"
+        ),
+      y = expression(paste("Elongation, ", Delta, italic("A"), " (µm"^2, ")"))
+      )
+}
+
+specie_list = c("europaea", "PY1")
+Elongation_noSup_plots = list()
+
+for (specie in specie_list){
+  plot_noSup <- 
+    plot_biomassProduction_vs_area_elongation_mergeRep(
+      subset(summarize_data_Gn, Condition == "no-supernatant" & Specie == specie)
+      )
+  
+  base_name <- "fig2CF_biomassProduction_vs_elongation_noSup"
+  
+  Elongation_noSup <- plot_noSup+mytheme_paper
+  Elongation_noSup_plots[[specie]] <- Elongation_noSup
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
+         plot = Elongation_noSup, width = 3.2, height = 2.4, units = "in", device = "svg")
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
+         plot = Elongation_noSup, width = 3.2, height = 2.4, units = "in", device = "png", dpi = 600)
+}
+```
+
+```{r }
+plot_sup <-
+  plot_biomassProduction_vs_area_elongation_mergeRep(
+    subset(summarize_data_Gn, Condition == "supernatant")
+    ) 
+
+base_name <- "fig3D_biomassProduction_vs_elongation_sup"
+
+Elongation_sup <- plot_sup+mytheme_paper
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       plot = Elongation_sup, width = 3.2, height = 2.4, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       plot = Elongation_sup,
+       width = 3.2, height = 2.4, units = "in", device = "png", dpi = 600)
+```
+
+# deltaVt vs Ad
+```{r }
+plot_biomassProduction_vs_Ad_mergeRep <- function(data){
+  data = data
+  
+  if(nrow(data) == 0){
+    message(glue("Skipping: No data"))
+    return(NULL)
+  }
+  
+  corrs <- data %>%
+    group_by(Specie) %>%
+    summarise(r = cor(um3_biomass_production_density_start, fitted_Ad, method = "pearson"),
+              x_pos = 1.5 * 10^6, 
+              y_pos = 2.5,
+              .groups = "drop")
+  
+  biomassProduction_vs_Ad_mergeRep <-
+    ggplot() +
+    geom_point(data = data,
+               aes(x = um3_biomass_production_density_start, 
+                   y = fitted_Ad, 
+                   fill = as.factor(Specie),
+                   ),
+               shape = 21,
+               color = "black", size = 2.5, alpha = 0.6, stroke = 0.5
+               ) +
+    
+    # linear regression
+    geom_smooth(data = data,
+                aes(x = um3_biomass_production_density_start,
+                    y = fitted_Ad, 
+                    group = Specie),
+                method = "lm", se = FALSE, color = "black") +
+    
+    # label
+    geom_text(data = corrs,
+              aes(x = x_pos * 0.95, 
+                  y = y_pos * 0.95,
+                  label = paste0(
+                    "r = ", sprintf("%.2f", r)
+                    )),
+              inherit.aes = FALSE,
+              color = "black",
+              hjust = 1,
+              vjust = 1,
+              size = 2.5) +
+    
+    scale_fill_manual(values = my_colors) +
+    scale_x_continuous(
+      breaks = seq(0, 1.5 * 10^6, by = 5 * 10^5),
+      limits = c(0, 1.5 * 10^6),
+      labels = label_number(scale = 10^-6)) +
+    scale_y_continuous(
+      breaks = seq(0.5, 4.0, by = 0.5),
+      limits = c(0.5, 4.0)) +
+    labs(
+      x = expression(
+        Delta * italic(V[t]) ~ " (" %*% "10"^6 ~ mu * "m"^3 ~ "mL"^-1 * ")"
+        ),
+      y = expression(paste("Area at division, ", italic("Ad"), " (", mu, "m"^2, ")"))
+      )
+}
+
+specie_list = c("europaea", "PY1")
+Ad_noSup_plots = list()
+
+for (specie in specie_list){
+  plot_noSup <- 
+    plot_biomassProduction_vs_Ad_mergeRep(
+      subset(summarize_data_Gn, Condition == "no-supernatant" & Specie == specie)
+      )
+  
+  base_name <- "fig2CF'_biomassProduction_vs_Ad_noSup"
+  
+  Ad_noSup <- plot_noSup+mytheme_paper
+  Ad_noSup_plots[[specie]] <- Ad_noSup
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
+         plot = Ad_noSup, width = 3.2, height = 2.4, units = "in", device = "svg")
+  
+  ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
+         plot = Ad_noSup, width = 3.2, height = 2.4, units = "in", device = "png", dpi = 600)
+}
+```
+
+```{r }
+plot_sup <-
+  plot_biomassProduction_vs_Ad_mergeRep(
+    subset(summarize_data_Gn, Condition == "supernatant")
+    ) 
+
+base_name <- "fig3D'_biomassProduction_vs_Ad_sup"
+
+Ad_sup <- plot_sup+mytheme_paper
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       plot = Ad_sup, width = 3.2, height = 2.4, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       plot = Ad_sup,
+       width = 3.2, height = 2.4, units = "in", device = "png", dpi = 600)
+```
+
+```{r }
+library(patchwork)
+fig2 <- (
+  (Gtime_noSup_plots[["PY1"]] / ElongationRate_noSup_plots[["PY1"]] / Elongation_noSup_plots[["PY1"]] ) | 
+    (Gtime_noSup_plots[["europaea"]] / ElongationRate_noSup_plots[["europaea"]] / Elongation_noSup_plots[["europaea"]])
+    ) +
+  plot_annotation(tag_levels = 'A')
+base_name = "fig2"
+
+# save
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       fig2, width = 6.4, height = 7.2, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       fig2, width = 6.4, height = 7.2, units = "in", device = "png", dpi = 600)
+```
+
+```{r }
+library(patchwork)
+fig3 <- 
+  Gtime_sup / ElongationRate_sup / Elongation_sup + 
+  plot_annotation(tag_levels = list(c("B", "C", "D")))
+base_name = "fig3"
+
+# save
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       fig3, width = 3.2, height = 7.2, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       fig3, width = 3.2, height = 7.2, units = "in", device = "png", dpi = 600)
+```
+
+# division ratio
+```{r histogram of divR}
+plot_histogram_of_divR <- function(data){
+  data = data
+  
+  if(nrow(data) == 0){
+    message(glue("Skipping: No data"))
+    return(NULL)
+  }
+  
+  histogram_of_divR <-
+    ggplot(data,
+           aes(
+             x = div_ratio, 
+             fill = as.character(Specie)
+             )
+           ) +
+    geom_histogram(position = "stack", color = "black", bins = 30) +
+    scale_fill_manual(values = my_colors) +
+    labs(
+      x = expression(paste("Division ratio, ", italic("DR"))), 
+      y = "Count") +　
+  facet_nested(. ~ Condition + Specie ,
+               labeller = labeli,
+               nest_line = TRUE,
+               scales = "free_x")
+}
+
+plot <- plot_histogram_of_divR(daughter_cell_pair) 
+
+base_name <- "(exstra)_division_ratio"
+
+# SVG & png
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       plot = plot + mytheme_paper, 
+       width = 6.4, height = 2.4, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       plot = plot + mytheme_paper, 
+       width = 6.4, height = 2.4, units = "in", device = "png", dpi = 600)
+```
+
