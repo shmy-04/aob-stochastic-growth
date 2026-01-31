@@ -1,3 +1,6 @@
+# --- Batch simulation outputs (Monte Carlo) ---
+5_simulation_batch/1_simulation/result/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
