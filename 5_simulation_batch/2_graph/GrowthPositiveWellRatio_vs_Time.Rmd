@@ -1,0 +1,809 @@
+---
+title: "GrowthPositiveWellRatio_vs_Time"
+author: "Shuto Ikeda"
+date: "25/1/2026"
+output: .svg, .pdf
+---
+
+```{r setting}
+# Clear global workspace
+rm( list = ls( envir = globalenv() ), envir = globalenv() )
+
+library("ggthemes")
+library("tidyverse")
+library("patchwork")
+library("export")
+library("cowplot")
+library("extrafont")
+library("RColorBrewer")
+library("scales")
+library("svglite")
+library("ggh4x")
+
+# define createEmptyDf
+createEmptyDf = function( nrow, ncol, colnames = c() ){
+  data.frame( matrix( vector(), nrow, ncol, dimnames = list( c(), colnames ) ) )
+}
+
+# define mytheme
+mytheme_paper <- 
+  theme(text = element_text(family = "Helvetica", size=8, color = "black"),
+        plot.title = element_text(family = "Helvetica", size=9.5, color = "black", face = "bold",
+                                  vjust = 1, hjust = 0),
+        axis.title.x = element_text(family = "Helvetica", size=8, color = "black",
+                                    margin = margin(t = 5)),
+        axis.title.y = element_text(family = "Helvetica", size=8, color = "black", angle = 90,
+                                    margin = margin(r = 5)),
+        axis.text.x = element_text(family = "Helvetica", size=6.5, color = "black", vjust = 0.5),
+        axis.text.y = element_text(family = "Helvetica", size=6.5, color = "black", hjust = 0.5),
+        strip.text.x = element_text(family = "Helvetica", size=8, color = "black"),
+        strip.text.y = element_text(family = "Helvetica", size=8, color = "black", angle = -90),
+        strip.background = element_blank(),
+        axis.line = element_line(color = "black"),
+        legend.position = "None",
+        legend.background = element_blank(),
+        legend.key = element_blank(),
+        legend.title = element_blank(),
+        panel.background =  element_rect(fill = "transparent", colour = "black"),
+        panel.grid.major = element_line(colour = "transparent"),
+        panel.grid.minor = element_line(colour = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = "transparent"),
+        plot.tag = element_text(family = "Helvetica", size = 12, face = "bold", color = "black"))
+
+theme_set(mytheme_paper)
+```
+
+```{r import only PY1}
+prefix = "../"
+name = "0_batch_experiment_data/"
+rawdata_noSup <-
+  read.csv(paste0(prefix, name, "summary_noCFS.csv"))
+rawdata_sup <-
+  read.csv(paste0(prefix, name, "summary_CFS.csv"))
+rawdata_merge = bind_rows(rawdata_noSup, rawdata_sup)
+
+prefix = "../../3_regression/regression_result/"
+name = "1_fit_results.csv"
+fit = read.csv(paste0(prefix, name))
+```
+
+```{r mutate}
+PY1_growth_rate_per_day = 0.23 
+
+initial_concentrations <- list(
+  "N1" = 0.070957882,
+  "N2" = 0.0639502318,
+  "N3" = 0.063268077
+)
+
+# convergence_cell_birth_volume(half of cell division)
+cell_birth_area = as.numeric(subset(fit, Model == "Ad_sizer")["p3"])/2
+cell_birth_volume = cell_birth_area *0.75
+# Amount of nitrite produced per cell (pmol)
+dK_per_cell = 1.0 / 33.5
+initial_concentrations_noCFS_mM <- list(
+  "D10_5" = cell_birth_volume * 1e5 * 0.2 * dK_per_cell / 1e-3 / 1e9, 
+  "D10_3" = cell_birth_volume * 1e3 * 0.2 * dK_per_cell / 1e-3 / 1e9,
+  "D10_1" = cell_birth_volume * 1e1 * 0.2 * dK_per_cell / 1e-3 / 1e9
+)
+
+rawdata_mutate <- 
+  rawdata_merge %>%
+  group_by(Specie, CellDensity, N, Condition, ID) %>% 
+  mutate(
+    Nitrite_production = case_when(
+      Specie == "PY1" & N == "1" & Condition == "supernatant 10%" ~ ifelse(Nitrite - initial_concentrations$N1 > 0,
+                                                                           Nitrite - initial_concentrations$N1, 0),
+      Specie == "PY1" & N == "2" & Condition == "supernatant 10%" ~ ifelse(Nitrite - initial_concentrations$N2 > 0, 
+                                                                           Nitrite - initial_concentrations$N2, 0),
+      Specie == "PY1" & N == "3" & Condition == "supernatant 10%" ~ ifelse(Nitrite - initial_concentrations$N3 > 0, 
+                                                                           Nitrite - initial_concentrations$N3, 0),
+      TRUE ~ Nitrite
+    ),
+    generation = case_when(
+           Specie == "PY1" ~ Day / (log(2)/PY1_growth_rate_per_day)
+           )
+  ) 
+
+rawdata_filter <- 
+  rawdata_mutate %>% 
+  filter(Specie == "PY1" & Condition == "Cat+" |
+           Specie == "PY1" & Condition == "supernatant 10%" |
+           Specie == "PY1" & Condition == "supernatant 0%")
+```
+
+```{r import simulation data}
+prefix = "../1_simulation/result/"
+name_1 = "basic_numerous/"
+name_1_2 = "weibull_numerous/"
+
+# name_2
+name_2_1 = "noCFS_10^5_new_deltaVt/"
+name_2_2 = "noCFS_10^3_new_deltaVt/"
+name_2_3 = "noCFS_10^1_new_deltaVt/"
+
+name_2_4 = "CFS_10^5/"
+name_2_5 = "CFS_10^3/"
+name_2_6 = "CFS_10^1/"
+
+name_2_7 = "noCFS_10^5/"
+name_2_8 = "noCFS_10^3/"
+name_2_9 = "noCFS_10^1/"
+
+name_2_10 = "CFS_10^5_lambdaAdjusted/"
+name_2_11 = "CFS_10^3_lambdaAdjusted/"
+name_2_12 = "CFS_10^1_lambdaAdjusted/"
+
+name_3 = "biomass_records/"
+
+path_01 <- paste0(name_1, name_2_1, name_3)
+path_02 <- paste0(name_1, name_2_2, name_3)
+path_03 <- paste0(name_1, name_2_3, name_3)
+path_04 <- paste0(name_1, name_2_4, name_3)
+path_05 <- paste0(name_1, name_2_5, name_3)
+path_06 <- paste0(name_1, name_2_6, name_3)
+path_07 <- paste0(name_1_2, name_2_1, name_3)
+path_08 <- paste0(name_1_2, name_2_2, name_3)
+path_09 <- paste0(name_1_2, name_2_3, name_3)
+path_10 <- paste0(name_1_2, name_2_4, name_3)
+path_11 <- paste0(name_1_2, name_2_5, name_3)
+path_12 <- paste0(name_1_2, name_2_6, name_3)
+path_13 <- paste0(name_1, name_2_7, name_3)
+path_14 <- paste0(name_1, name_2_8, name_3)
+path_15 <- paste0(name_1, name_2_9, name_3)
+path_16 <- paste0(name_1, name_2_10, name_3)
+path_17 <- paste0(name_1, name_2_11, name_3)
+path_18 <- paste0(name_1, name_2_12, name_3)
+path_19 <- paste0(name_1_2, name_2_10, name_3)
+path_20 <- paste0(name_1_2, name_2_11, name_3)
+path_21 <- paste0(name_1_2, name_2_12, name_3)
+
+simu_data_list_01 <- list.files(path = paste0(prefix, path_01), pattern = "*.csv", full.names = TRUE)
+simu_data_list_02 <- list.files(path = paste0(prefix, path_02), pattern = "*.csv", full.names = TRUE)
+simu_data_list_03 <- list.files(path = paste0(prefix, path_03), pattern = "*.csv", full.names = TRUE)
+simu_data_list_04 <- list.files(path = paste0(prefix, path_04), pattern = "*.csv", full.names = TRUE)
+simu_data_list_05 <- list.files(path = paste0(prefix, path_05), pattern = "*.csv", full.names = TRUE)
+simu_data_list_06 <- list.files(path = paste0(prefix, path_06), pattern = "*.csv", full.names = TRUE)
+simu_data_list_07 <- list.files(path = paste0(prefix, path_07), pattern = "*.csv", full.names = TRUE)
+simu_data_list_08 <- list.files(path = paste0(prefix, path_08), pattern = "*.csv", full.names = TRUE)
+simu_data_list_09 <- list.files(path = paste0(prefix, path_09), pattern = "*.csv", full.names = TRUE)
+simu_data_list_10 <- list.files(path = paste0(prefix, path_10), pattern = "*.csv", full.names = TRUE)
+simu_data_list_11 <- list.files(path = paste0(prefix, path_11), pattern = "*.csv", full.names = TRUE)
+simu_data_list_12 <- list.files(path = paste0(prefix, path_12), pattern = "*.csv", full.names = TRUE)
+simu_data_list_13 <- list.files(path = paste0(prefix, path_13), pattern = "*.csv", full.names = TRUE)
+simu_data_list_14 <- list.files(path = paste0(prefix, path_14), pattern = "*.csv", full.names = TRUE)
+simu_data_list_15 <- list.files(path = paste0(prefix, path_15), pattern = "*.csv", full.names = TRUE)
+simu_data_list_16 <- list.files(path = paste0(prefix, path_16), pattern = "*.csv", full.names = TRUE)
+simu_data_list_17 <- list.files(path = paste0(prefix, path_17), pattern = "*.csv", full.names = TRUE)
+simu_data_list_18 <- list.files(path = paste0(prefix, path_18), pattern = "*.csv", full.names = TRUE)
+simu_data_list_19 <- list.files(path = paste0(prefix, path_19), pattern = "*.csv", full.names = TRUE)
+simu_data_list_20 <- list.files(path = paste0(prefix, path_20), pattern = "*.csv", full.names = TRUE)
+simu_data_list_21 <- list.files(path = paste0(prefix, path_21), pattern = "*.csv", full.names = TRUE)
+
+simu_data_list = c(simu_data_list_01, simu_data_list_02, simu_data_list_03, 
+                   simu_data_list_04, simu_data_list_05, simu_data_list_06,
+                   simu_data_list_07, simu_data_list_08, simu_data_list_09,
+                   simu_data_list_10, simu_data_list_11, simu_data_list_12,
+                   simu_data_list_13, simu_data_list_14, simu_data_list_15,
+                   simu_data_list_16, simu_data_list_17, simu_data_list_18,
+                   simu_data_list_19, simu_data_list_20, simu_data_list_21
+                   )
+simu_data <- lapply(simu_data_list, function(file){
+  data = read.csv(file) %>% 
+    mutate(file_name = tools::file_path_sans_ext(file))
+  }) %>% 
+  bind_rows()
+```
+
+```{r mutate data}
+simu_data_mutate = simu_data %>% 
+  mutate(Nitrite_pmol = B / cell_birth_volume * dK_per_cell,
+         Nitrite_mM = Nitrite_pmol / 1e-3 / 1e9,
+         Specie = "PY1",
+         CellDensity = str_extract(name, "10\\^5|10\\^3|10\\^1"),
+         Day = t_hour/24,
+         N = N_sim,
+         Condition_raw = str_extract(name, "noCFS|CFS"),
+         Condition = case_when(
+           Condition_raw == "noCFS" ~ "CFS-",
+           Condition_raw == "CFS"   ~ "CFS+",
+           TRUE ~ NA_character_
+           ),
+         initial_condition = str_extract(name, "lambdaAdjusted|new_deltaVt"),
+         ID = ID) %>% 
+  group_by(Specie, CellDensity, N, Condition, initial_condition, ID) %>% 
+  mutate(Nitrite_production = case_when(
+           Specie == "PY1" & N == "1" & Condition == "CFS+" ~ ifelse(Nitrite_mM - initial_concentrations$N1 > 0,
+                                                                     Nitrite_mM - initial_concentrations$N1, 0),
+           Specie == "PY1" & N == "2" & Condition == "CFS+" ~ ifelse(Nitrite_mM - initial_concentrations$N2 > 0, 
+                                                                     Nitrite_mM - initial_concentrations$N2, 0),
+           Specie == "PY1" & N == "3" & Condition == "CFS+" ~ ifelse(Nitrite_mM - initial_concentrations$N3 > 0, 
+                                                                     Nitrite_mM - initial_concentrations$N3, 0),
+           Specie == "PY1" & CellDensity == "10^5" & Condition == "CFS-" ~ ifelse(Nitrite_mM - initial_concentrations_noCFS_mM$D10_5 > 0,
+                                                                                  Nitrite_mM - initial_concentrations_noCFS_mM$D10_5, 0),
+           Specie == "PY1" & CellDensity == "10^3" & Condition == "CFS-" ~ ifelse(Nitrite_mM - initial_concentrations_noCFS_mM$D10_3 > 0,
+                                                                                  Nitrite_mM - initial_concentrations_noCFS_mM$D10_3, 0),
+           Specie == "PY1" & CellDensity == "10^1" & Condition == "CFS-" ~ ifelse(Nitrite_mM - initial_concentrations_noCFS_mM$D10_1 > 0,
+                                                                                  Nitrite_mM - initial_concentrations_noCFS_mM$D10_1, 0),
+           TRUE ~ Nitrite_mM  
+           ),
+         Nitrite_OVF_count = cumsum(Nitrite_production >= 1),
+         generation = case_when(
+           Specie == "PY1" ~ Day / (log(2)/PY1_growth_rate_per_day)
+           ),
+         source = paste0("sim_", str_extract(file_name, "basic|weibull"))
+         )
+
+rawdata_merge_mutate = rawdata_filter %>%
+  mutate(Condition = case_when(
+           Condition == "Cat+" ~ "CFS-",
+           Condition == "supernatant 10%" ~ "CFS+",
+           Condition == "supernatant 0%" ~ "CFS-_NC",
+           TRUE ~ NA_character_
+           ),
+         source = "exp") %>% 
+  ungroup()
+```
+
+```{r merge simu and exp}
+exp_days_df <- rawdata_merge_mutate %>% 
+  distinct(Specie, CellDensity, N, Condition, Day) %>% 
+  rename(exp_day = Day) %>% 
+  filter(N == 1) %>% 
+  select(-N)
+
+simu_data_sampled = simu_data_mutate %>% 
+  inner_join(exp_days_df,
+             by = c("Specie", "CellDensity", "Condition"),
+             relationship = "many-to-many") %>% 
+  mutate(time_diff = abs(Day - exp_day)) %>% 
+  group_by(Specie, CellDensity, N, Condition, initial_condition, ID, exp_day, source) %>%
+  slice_min(time_diff, n = 1) %>% 
+  ungroup()
+
+simu_data_sampled_mutate <-
+  simu_data_sampled %>% 
+  mutate(IF_population = ifelse(Nitrite_production > 0.25, 1, 0)) %>% 
+  arrange(Specie, CellDensity, Condition, initial_condition, N, source, Day) %>%
+  group_by(Specie, CellDensity, Condition, initial_condition, N, source, Day) %>%
+  mutate(IF_population_Cumulative = sum(IF_population),
+         awake_well_ratio = IF_population_Cumulative/n()) %>%
+  select(Specie, CellDensity, Condition, initial_condition, N, Day, IF_population_Cumulative, awake_well_ratio, source) %>% 
+  ungroup()
+
+simu_data_summarize <-
+  simu_data_sampled_mutate %>% 
+  group_by(Specie, CellDensity, Condition, initial_condition, Day, source) %>% 
+  summarise(
+    sim_median = median(awake_well_ratio),
+    sim_mean   = mean(awake_well_ratio),
+    PI_lower   = quantile(awake_well_ratio, 0.025),
+    PI_upper   = quantile(awake_well_ratio, 0.975),
+    .groups = "drop"
+  )
+
+# exp_data
+exp_data = rawdata_merge_mutate %>%
+  select(Specie, CellDensity, Day, N, Condition, ID, Nitrite_production, generation, source)
+
+exp_data_mutate <-
+  exp_data %>%
+  mutate(IF_population = ifelse(Nitrite_production > 0.25, 1, 0)) %>%
+  arrange(Specie, CellDensity, N, Condition, source, Day) %>%
+  group_by(Specie, CellDensity, N, Condition, source, Day) %>%
+  mutate(IF_population_Cumulative = sum(IF_population),
+         awake_well_ratio = IF_population_Cumulative/12) %>%
+  select(Specie, CellDensity, N, Condition, Day, IF_population_Cumulative, awake_well_ratio, source) %>%
+  distinct() %>%
+  ungroup()
+
+exp_data_summarize <-
+  exp_data_mutate %>%
+  group_by(Specie, CellDensity, Condition, source, Day) %>%
+  summarise(mean = mean(awake_well_ratio),
+            sd = sd(awake_well_ratio),
+            n = n()) %>%
+  group_by(Specie,  CellDensity, Condition, source) %>%
+  mutate(max_day = max(Day))
+```
+
+```{r plot_cat+}
+# define Scientific notation
+labeli <- as_labeller(c(
+  europaea = "italic('N. europaea')",
+  PY1 = "italic('Nitrosomonas')~'sp. PY1'",
+  `10^5` = "10^5",
+  `10^3` = "10^3",
+  `10^1` = "10^1",
+  `10^0` = "0",
+  `supernatant 10%` = "'CFS +'",
+  `supernatant 0%` = "'CFS -'",
+  `normal` = "'CFS -'",
+  `catalase-` = "'CFS -,'~'catalase-'",
+  `1` = "'N = 1'",
+  `2` = "'N = 2'",
+  `3` = "'N = 3'",
+  `Cat+` = "'CFS -'",
+  `Cat-` = "'CFS -,'~'catalase-'",
+  `CFS-` = "'CFS-'",
+  `CFS+` = "'CFS+,'~'catalase-'"
+), default = label_parsed)
+
+folder_path = "./result/"
+if (!dir.exists(folder_path)) {
+  dir.create(folder_path, recursive = TRUE)
+}
+
+label_vec <- c(
+  `10^5` = "10^5",
+  `10^3` = "10^3",
+  `10^1` = "10^1",
+  `10^0` = "0",
+  `sim_weibull` = "'Simulation'",
+  `exp` = "'Experimental'"
+  )
+```
+
+```{r }
+exp_data <- subset(exp_data_summarize,
+                   (Condition == "CFS+" & source == "exp" & CellDensity != "10^0"))
+simu_data <- subset(simu_data_summarize,
+                   (Condition == "CFS+" & source == "sim_basic" & CellDensity != "10^0" & is.na(initial_condition)))
+
+exp_data$Specie <- factor(exp_data$Specie, levels = c("PY1", "europaea"))
+exp_data$Condition <- factor(exp_data$Condition, levels = c("CFS-", "CFS+")) 
+exp_data$CellDensity <- factor(exp_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+simu_data$Specie <- factor(simu_data$Specie, levels = c("PY1", "europaea"))
+simu_data$Condition <- factor(simu_data$Condition, levels = c("CFS-", "CFS+")) 
+simu_data$CellDensity <- factor(simu_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+  
+lineplot_CFS_basic <-
+  ggplot(exp_data,
+         aes(x = Day, y = mean, 
+             fill = source, shape = source, color = source)) +
+  
+  # --- experimental ---
+  geom_line(data = exp_data,
+            alpha = 1.0 , linewidth = 0.25) +
+  geom_point(data = exp_data,
+             size = 1.5, alpha = 1.0, stroke = 0.5) +
+  geom_errorbar(data = exp_data,
+                aes(ymin = pmax(mean - sd, 0), ymax = pmin(mean + sd, 1),
+                    width = max_day/20)) +
+  
+  # --- simulation ---
+  geom_ribbon(data = simu_data,
+              aes(x = Day, 
+                  ymin = PI_lower, ymax = PI_upper),
+              inherit.aes = FALSE,
+              alpha = 0.25
+              ) +
+  geom_line(data = simu_data,
+            aes(x = Day, y = sim_median),
+            inherit.aes = FALSE,
+            alpha = 0.75, linewidth = 0.25) +
+  geom_point(data = simu_data,
+             aes(x = Day, y = sim_median),
+             size = 1.5, alpha = 0.9, stroke = 0.5) +
+  
+  scale_fill_manual(values = c("exp" = "salmon", "sim_basic" =  "gray45")) +
+  scale_color_manual(values = c("exp" = "salmon", "sim_basic" =  "black")) +
+  scale_shape_manual(values = c("exp" = 21, "sim_basic" =  24)) +
+  
+  scale_y_continuous(limits = c(-0.05, 1.05),
+                     breaks = seq(0, 1, by = 0.5)) +
+  labs(x = "Incubation time (day)",
+       y = "Fraction of wells\nproducing >0.25 mM nitrite",
+       title = "") +
+  facet_nested(. ~ CellDensity,
+               labeller = labeli,
+               nest_line = TRUE,
+               scales = "free_x") +
+  mytheme_paper
+ 
+# lineplot_CFS_basic
+
+base_name <- "fig6A_cumulative_wells_>0.25mM_Nitrite_CFS+_basic"
+
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       plot = lineplot_CFS_basic, width = 6.4, height = 2.4, units = "in", device = "svg")
+ggsave(file.path(folder_path, paste0(base_name, ".pdf")),
+       plot = lineplot_CFS_basic, width = 6.4, height = 2.4, units = "in", device = "pdf", dpi = 600)
+```
+
+```{r }
+exp_data <- subset(exp_data_summarize,
+                   (Condition == "CFS-" & source == "exp" & CellDensity != "10^0"))
+simu_data <- subset(simu_data_summarize,
+                   (Condition == "CFS-" & source == "sim_basic" & CellDensity != "10^0" & initial_condition == "new_deltaVt"))
+
+exp_data$Specie <- factor(exp_data$Specie, levels = c("PY1", "europaea"))
+exp_data$Condition <- factor(exp_data$Condition, levels = c("CFS-", "CFS+")) 
+exp_data$CellDensity <- factor(exp_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+simu_data$Specie <- factor(simu_data$Specie, levels = c("PY1", "europaea"))
+simu_data$Condition <- factor(simu_data$Condition, levels = c("CFS-", "CFS+")) 
+simu_data$CellDensity <- factor(simu_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+  
+lineplot_noCFS_basic <-
+  ggplot(exp_data,
+         aes(x = Day, y = mean, 
+             fill = source, shape = source, color = source)) +
+  
+  geom_errorbar(data = exp_data,
+                aes(ymin = pmax(mean - sd, 0), ymax = pmin(mean + sd, 1),
+                    width = max_day/20)) +
+  
+  # --- experimental ---
+  geom_line(data = exp_data,
+            alpha = 1.0 , linewidth = 0.25) +
+  geom_point(data = exp_data,
+             size = 1.5, alpha = 1.0, stroke = 0.5) +
+  
+  # --- simulation ---
+  geom_ribbon(data = simu_data,
+              aes(x = Day, 
+                  ymin = PI_lower, ymax = PI_upper),
+              inherit.aes = FALSE,
+              alpha = 0.25
+              ) +
+  geom_line(data = simu_data,
+            aes(x = Day, y = sim_median),
+            inherit.aes = FALSE,
+            alpha = 0.75, linewidth = 0.25) +
+  geom_point(data = simu_data,
+             aes(x = Day, y = sim_median),
+             size = 1.5, alpha = 0.9, stroke = 0.5) +
+  
+  scale_fill_manual(values = c("exp" = "salmon", "sim_basic" =  "gray45")) +
+  scale_color_manual(values = c("exp" = "salmon", "sim_basic" =  "black")) +
+  scale_shape_manual(values = c("exp" = 21, "sim_basic" =  24)) +
+  
+  scale_y_continuous(limits = c(-0.05, 1.05),
+                     breaks = seq(0, 1, by = 0.5)) +
+  labs(x = "Incubation time (day)",
+       y = "Fraction of wells\nproducing >0.25 mM nitrite",
+       title = "") +
+  facet_nested(. ~ CellDensity,
+               labeller = labeli,
+               nest_line = TRUE,
+               scales = "free_x") +
+  mytheme_paper
+ 
+# lineplot_noCFS_basic
+
+base_name <- "fig6B_cumulative_wells_>0.25mM_Nitrite_CFS-_basic"
+
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       plot = lineplot_noCFS_basic, width = 6.4, height = 2.4, units = "in", device = "svg")
+ggsave(file.path(folder_path, paste0(base_name, ".pdf")),
+       plot = lineplot_noCFS_basic, width = 6.4, height = 2.4, units = "in", device = "pdf", dpi = 600)
+```
+
+```{r }
+exp_data <- subset(exp_data_summarize,
+                   (Condition == "CFS-" & source == "exp" & CellDensity != "10^0"))
+simu_data <- subset(simu_data_summarize,
+                   (Condition == "CFS-" & source == "sim_weibull" & CellDensity != "10^0" & initial_condition == "new_deltaVt"))
+
+exp_data$Specie <- factor(exp_data$Specie, levels = c("PY1", "europaea"))
+exp_data$Condition <- factor(exp_data$Condition, levels = c("CFS-", "CFS+")) 
+exp_data$CellDensity <- factor(exp_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+simu_data$Specie <- factor(simu_data$Specie, levels = c("PY1", "europaea"))
+simu_data$Condition <- factor(simu_data$Condition, levels = c("CFS-", "CFS+")) 
+simu_data$CellDensity <- factor(simu_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+  
+lineplot_noCFS_weibull <-
+  ggplot(exp_data,
+         aes(x = Day, y = mean, 
+             fill = source, shape = source, color = source)) +
+  
+  geom_errorbar(data = exp_data,
+                aes(ymin = pmax(mean - sd, 0), ymax = pmin(mean + sd, 1),
+                    width = max_day/20)) +
+  
+  # --- experimental ---
+  geom_line(data = exp_data,
+            alpha = 1.0 , linewidth = 0.25) +
+  geom_point(data = exp_data,
+             size = 1.5, alpha = 1.0, stroke = 0.5) +
+  
+  # --- simulation ---
+  geom_ribbon(data = simu_data,
+              aes(x = Day, 
+                  ymin = PI_lower, ymax = PI_upper),
+              inherit.aes = FALSE,
+              alpha = 0.25
+              ) +
+  geom_line(data = simu_data,
+            aes(x = Day, y = sim_median),
+            inherit.aes = FALSE,
+            alpha = 0.75, linewidth = 0.25) +
+  geom_point(data = simu_data,
+             aes(x = Day, y = sim_median),
+             size = 1.5, alpha = 0.9, stroke = 0.5) +
+  
+  scale_fill_manual(values = c("exp" = "salmon", "sim_weibull" =  "gray45")) +
+  scale_color_manual(values = c("exp" = "salmon", "sim_weibull" =  "black")) +
+  scale_shape_manual(values = c("exp" = 21, "sim_weibull" =  24)) +
+  
+  scale_y_continuous(limits = c(-0.05, 1.05),
+                     breaks = seq(0, 1, by = 0.5)) +
+  labs(x = "Incubation time (day)",
+       y = "Fraction of wells\nproducing >0.25 mM nitrite", 
+       title = "") +
+  facet_nested(. ~ CellDensity,
+               labeller = labeli,
+               nest_line = TRUE,
+               scales = "free_x") +
+  mytheme_paper
+ 
+# lineplot_noCFS_weibull
+
+base_name <- "fig6C_cumulative_wells_>0.25mM_Nitrite_CFS-_weibull"
+
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       plot = lineplot_noCFS_weibull, width = 6.4, height = 2.4, units = "in", device = "svg")
+ggsave(file.path(folder_path, paste0(base_name, ".pdf")),
+       plot = lineplot_noCFS_weibull, width = 6.4, height = 2.4, units = "in", device = "pdf", dpi = 600)
+```
+
+```{r }
+library(patchwork)
+fig6 <- 
+  lineplot_CFS_basic / lineplot_noCFS_basic / lineplot_noCFS_weibull +
+  plot_annotation(tag_levels = 'A')
+base_name = "fig6"
+
+# save
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       fig6, width = 6.4, height = 2.4*3, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".pdf")),
+       fig6, width = 6.4, height = 2.4*3, units = "in", device = "pdf", dpi = 600)
+```
+
+```{r }
+exp_data <- subset(exp_data_summarize,
+                   (Condition == "CFS-" & source == "exp" & CellDensity != "10^0"))
+simu_data <- subset(simu_data_summarize,
+                   (Condition == "CFS-" & source == "sim_basic" & CellDensity != "10^0" & is.na(initial_condition)))
+
+# set order
+exp_data$Specie <- factor(exp_data$Specie, levels = c("PY1", "europaea"))
+exp_data$Condition <- factor(exp_data$Condition, levels = c("CFS-", "CFS+")) 
+exp_data$CellDensity <- factor(exp_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+simu_data$Specie <- factor(simu_data$Specie, levels = c("PY1", "europaea"))
+simu_data$Condition <- factor(simu_data$Condition, levels = c("CFS-", "CFS+")) 
+simu_data$CellDensity <- factor(simu_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+  
+lineplot_noCFS_basic_noInitGrowth <-
+  ggplot(exp_data,
+         aes(x = Day, y = mean, 
+             fill = source, shape = source, color = source)) +
+  
+  geom_errorbar(data = exp_data,
+                aes(ymin = pmax(mean - sd, 0), ymax = pmin(mean + sd, 1),
+                    width = max_day/20)) +
+  
+  # --- experimental ---
+  geom_line(data = exp_data,
+            alpha = 1.0 , linewidth = 0.25) +
+  geom_point(data = exp_data,
+             size = 1.5, alpha = 1.0, stroke = 0.5) +
+  
+  # --- simulation ---
+  geom_ribbon(data = simu_data,
+              aes(x = Day, 
+                  ymin = PI_lower, ymax = PI_upper),
+              inherit.aes = FALSE,
+              alpha = 0.25
+              ) +
+  geom_line(data = simu_data,
+            aes(x = Day, y = sim_median),
+            inherit.aes = FALSE,
+            alpha = 0.75, linewidth = 0.25) +
+  geom_point(data = simu_data,
+             aes(x = Day, y = sim_median),
+             size = 1.5, alpha = 0.9, stroke = 0.5) +
+  
+  scale_fill_manual(values = c("exp" = "salmon", "sim_basic" =  "gray45")) +
+  scale_color_manual(values = c("exp" = "salmon", "sim_basic" =  "black")) +
+  scale_shape_manual(values = c("exp" = 21, "sim_basic" =  24)) +
+  
+  scale_y_continuous(limits = c(-0.05, 1.05),
+                     breaks = seq(0, 1, by = 0.5)) +
+  labs(x = "Incubation time (day)",
+       y = "Fraction of wells\nproducing >0.25 mM nitrite", 
+       title = "") +
+  facet_nested(. ~ CellDensity,
+               labeller = labeli,
+               nest_line = TRUE,
+               scales = "free_x") +
+  mytheme_paper
+ 
+# lineplot_noCFS_basic_noInitGrowth
+
+base_name <- "figS.10_cumulative_wells_>0.25mM_Nitrite_CFS-_basic_noInitGrowth"
+
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       plot = lineplot_noCFS_basic_noInitGrowth, width = 6.4, height = 2.4, units = "in", device = "svg")
+ggsave(file.path(folder_path, paste0(base_name, ".pdf")),
+       plot = lineplot_noCFS_basic_noInitGrowth, width = 6.4, height = 2.4, units = "in", device = "pdf", dpi = 600)
+```
+
+```{r }
+exp_data <- subset(exp_data_summarize,
+                   (Condition == "CFS+" & source == "exp" & CellDensity != "10^0"))
+simu_data <- subset(simu_data_summarize,
+                   (Condition == "CFS+" & source == "sim_weibull" & CellDensity != "10^0" & is.na(initial_condition)))
+
+# set order
+exp_data$Specie <- factor(exp_data$Specie, levels = c("PY1", "europaea"))
+exp_data$Condition <- factor(exp_data$Condition, levels = c("CFS-", "CFS+")) 
+exp_data$CellDensity <- factor(exp_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+simu_data$Specie <- factor(simu_data$Specie, levels = c("PY1", "europaea"))
+simu_data$Condition <- factor(simu_data$Condition, levels = c("CFS-", "CFS+")) 
+simu_data$CellDensity <- factor(simu_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+  
+lineplot_CFS_weibull <-
+  ggplot(exp_data,
+         aes(x = Day, y = mean, 
+             fill = source, shape = source, color = source)) +
+  
+  geom_errorbar(data = exp_data,
+                aes(ymin = pmax(mean - sd, 0), ymax = pmin(mean + sd, 1),
+                    width = max_day/20)) +
+  
+  # --- experimental ---
+  geom_line(data = exp_data,
+            alpha = 1.0 , linewidth = 0.25) +
+  geom_point(data = exp_data,
+             size = 1.5, alpha = 1.0, stroke = 0.5) +
+  
+  # --- simulation ---
+  geom_ribbon(data = simu_data,
+              aes(x = Day, 
+                  ymin = PI_lower, ymax = PI_upper),
+              inherit.aes = FALSE,
+              alpha = 0.25
+              ) +
+  geom_line(data = simu_data,
+            aes(x = Day, y = sim_median),
+            inherit.aes = FALSE,
+            alpha = 0.75, linewidth = 0.25) +
+  geom_point(data = simu_data,
+             aes(x = Day, y = sim_median),
+             size = 1.5, alpha = 0.9, stroke = 0.5) +
+  
+  scale_fill_manual(values = c("exp" = "salmon", "sim_weibull" =  "gray45")) +
+  scale_color_manual(values = c("exp" = "salmon", "sim_weibull" =  "black")) +
+  scale_shape_manual(values = c("exp" = 21, "sim_weibull" =  24)) +
+  
+  scale_y_continuous(limits = c(-0.05, 1.05),
+                     breaks = seq(0, 1, by = 0.5)) +
+  labs(x = "Incubation time (day)",
+       y = "Fraction of wells\nproducing >0.25 mM nitrite", 
+       title = "") +
+  facet_nested(. ~ CellDensity,
+               labeller = labeli,
+               nest_line = TRUE,
+               scales = "free_x") +
+  mytheme_paper
+ 
+# lineplot_CFS_weibull
+
+# base_name <- "figS.12A_cumulative_wells_>0.25mM_Nitrite_CFS+_weibull"
+# 
+# ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+#        plot = lineplot_CFS_weibull, width = 6.4, height = 2.4, units = "in", device = "svg")
+# ggsave(file.path(folder_path, paste0(base_name, ".pdf")),
+#        plot = lineplot_CFS_weibull, width = 6.4, height = 2.4, units = "in", device = "pdf", dpi = 600)
+```
+
+```{r }
+exp_data <- subset(exp_data_summarize,
+                   (Condition == "CFS+" & source == "exp" & CellDensity == "10^1"))
+simu_data <- subset(simu_data_summarize,
+                   (Condition == "CFS+" & CellDensity == "10^1"))
+
+# set order
+exp_data$Specie <- factor(exp_data$Specie, levels = c("PY1", "europaea"))
+exp_data$Condition <- factor(exp_data$Condition, levels = c("CFS-", "CFS+")) 
+exp_data$CellDensity <- factor(exp_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+simu_data$Specie <- factor(simu_data$Specie, levels = c("PY1", "europaea"))
+simu_data$Condition <- factor(simu_data$Condition, levels = c("CFS-", "CFS+")) 
+simu_data$CellDensity <- factor(simu_data$CellDensity, levels = c("10^5", "10^3", "10^1"))
+simu_data$source <- factor(simu_data$source, levels = c("sim_basic", "sim_weibull"))
+  
+plot_lineplot_CFS_lambda <- function(source_select, initial_condition_select){
+  if (initial_condition_select == "originallambda"){
+    simu_data_plot <- subset(simu_data, source==source_select & is.na(initial_condition))
+  } else if(initial_condition_select == "lambdaAdjusted"){
+    simu_data_plot <- subset(simu_data, source==source_select & initial_condition==initial_condition_select)
+  }
+  
+  lineplot_CFS_lambda <-
+    ggplot(exp_data,
+           aes(x = Day, y = mean, 
+               fill = source, shape = source, color = source)) +
+    
+    geom_errorbar(data = exp_data,
+                  aes(ymin = pmax(mean - sd, 0), ymax = pmin(mean + sd, 1),
+                      width = max_day/20)) +
+    
+    # --- experimental ---
+    geom_line(data = exp_data,
+              alpha = 1.0 , linewidth = 0.25) +
+    geom_point(data = exp_data,
+               size = 1.5, alpha = 1.0, stroke = 0.5) +
+    
+    # --- simulation ---
+    geom_ribbon(data = simu_data_plot,
+                aes(x = Day, 
+                    ymin = PI_lower, ymax = PI_upper),
+                inherit.aes = FALSE,
+                alpha = 0.25
+                ) +
+    geom_line(data = simu_data_plot,
+              aes(x = Day, y = sim_median),
+              inherit.aes = FALSE,
+              alpha = 0.75, linewidth = 0.25) +
+    geom_point(data = simu_data_plot,
+               aes(x = Day, y = sim_median),
+               size = 1.5, alpha = 0.9, stroke = 0.5) +
+    
+    scale_fill_manual(values = c("exp" = "salmon", "sim_weibull" =  "gray45", "sim_basic" =  "gray45")) +
+    scale_color_manual(values = c("exp" = "salmon", "sim_weibull" =  "black", "sim_basic" =  "black")) +
+    scale_shape_manual(values = c("exp" = 21, "sim_weibull" =  24, "sim_basic" =  24)) +
+    
+    scale_y_continuous(limits = c(-0.05, 1.05),
+                       breaks = seq(0, 1, by = 0.5)) +
+    labs(x = "Incubation time (day)",
+         y = "Fraction of wells\nproducing >0.25 mM nitrite", 
+         title = "") +
+    facet_nested(. ~ CellDensity,
+                 labeller = labeli,
+                 nest_line = TRUE,
+                 scales = "free_x") +
+    mytheme_paper
+}
+
+source_select_list <- c("sim_basic", "sim_weibull")
+initial_condition_select_list <- c("lambdaAdjusted", "originallambda")
+lineplot_CFS_lambda <- list()
+for (source_select in source_select_list){
+  for(initial_condition_select in initial_condition_select_list){
+    lineplot_CFS_lambda[[source_select]][[initial_condition_select]] <- plot_lineplot_CFS_lambda(source_select, initial_condition_select)
+  }
+}
+```
+
+```{r }
+figS_9 <-  
+  lineplot_CFS_lambda[["sim_basic"]][["originallambda"]] + plot_spacer() + lineplot_CFS_lambda[["sim_basic"]][["lambdaAdjusted"]] +
+  plot_layout(widths = c(2, 1, 2)) +
+  plot_annotation(tag_levels = list(c("G", "H"))) &
+  theme(
+    plot.tag.position = c(0.01, 0.9),
+    plot.margin = margin(t = 1, r = 1, b = 1, l = 1)
+  )
+base_name = "figS.9_CFS_basic_lambda_G-H"
+
+# save
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       figS_9, width = (3.2*2/3)*2.5*1.2, height = 2.4*1.2, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       figS_9, width = (3.2*2/3)*2.5*1.2, height = 2.4*1.2, units = "in", device = "png", dpi = 600)
+
+figS_12 <- lineplot_CFS_weibull / (lineplot_CFS_lambda[["sim_weibull"]][["lambdaAdjusted"]] + plot_spacer() + plot_spacer()) +
+  plot_annotation(tag_levels = list(c("A", "B"))) 
+base_name = "figS.12_CFS_weibull"
+
+# save
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       figS_12, width = 6.4, height = 4.8, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       figS_12, width = 6.4, height = 4.8, units = "in", device = "png", dpi = 600)
+```

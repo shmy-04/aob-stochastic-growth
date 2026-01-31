@@ -1,0 +1,314 @@
+Specie,CellDensity,N,Condition,Day,IF_population_Cumulative
+PY1,10^0,1,supernatant 10%,0,0
+PY1,10^0,1,supernatant 10%,6.875,0
+PY1,10^0,1,supernatant 10%,15.60416667,0
+PY1,10^0,1,supernatant 10%,25.875,0
+PY1,10^0,1,supernatant 10%,33.77083333,0
+PY1,10^0,1,supernatant 10%,48.70833333,0
+PY1,10^0,2,supernatant 10%,0,0
+PY1,10^0,2,supernatant 10%,6.875,0
+PY1,10^0,2,supernatant 10%,15.60416667,0
+PY1,10^0,2,supernatant 10%,25.875,0
+PY1,10^0,2,supernatant 10%,33.77083333,0
+PY1,10^0,2,supernatant 10%,48.70833333,0
+PY1,10^0,3,supernatant 10%,0,0
+PY1,10^0,3,supernatant 10%,6.875,0
+PY1,10^0,3,supernatant 10%,15.60416667,0
+PY1,10^0,3,supernatant 10%,25.875,0
+PY1,10^0,3,supernatant 10%,33.77083333,0
+PY1,10^0,3,supernatant 10%,48.70833333,0
+PY1,10^1,1,Cat+,65.95833333,0
+PY1,10^1,1,Cat+,87.91666667,0
+PY1,10^1,1,Cat+,109.7916667,0
+PY1,10^1,1,Cat+,130.6875,1
+PY1,10^1,1,Cat+,135.8333333,1
+PY1,10^1,1,Cat+,145.7083333,1
+PY1,10^1,1,Cat+,166.7916667,1
+PY1,10^1,1,Cat+,207.8125,2
+PY1,10^1,1,Cat+,229.8541667,2
+PY1,10^1,1,Cat+,269.0208333,2
+PY1,10^1,1,supernatant 0%,0,0
+PY1,10^1,1,supernatant 0%,6.875,0
+PY1,10^1,1,supernatant 0%,37.64583333,0
+PY1,10^1,1,supernatant 0%,48.70833333,0
+PY1,10^1,1,supernatant 10%,0,0
+PY1,10^1,1,supernatant 10%,6.875,0
+PY1,10^1,1,supernatant 10%,25.875,0
+PY1,10^1,1,supernatant 10%,28.75,7
+PY1,10^1,1,supernatant 10%,33.77083333,12
+PY1,10^1,1,supernatant 10%,37.64583333,12
+PY1,10^1,1,supernatant 10%,40.52083333,12
+PY1,10^1,1,supernatant 10%,44.70833333,12
+PY1,10^1,1,supernatant 10%,48.70833333,12
+PY1,10^1,1,supernatant 10%,56.625,12
+PY1,10^1,2,Cat+,65.95833333,0
+PY1,10^1,2,Cat+,87.91666667,0
+PY1,10^1,2,Cat+,109.7916667,0
+PY1,10^1,2,Cat+,130.6875,0
+PY1,10^1,2,Cat+,135.8333333,0
+PY1,10^1,2,Cat+,145.7083333,0
+PY1,10^1,2,Cat+,166.7916667,0
+PY1,10^1,2,Cat+,207.8125,3
+PY1,10^1,2,Cat+,229.8541667,4
+PY1,10^1,2,Cat+,269.0208333,4
+PY1,10^1,2,supernatant 0%,0,0
+PY1,10^1,2,supernatant 0%,6.875,0
+PY1,10^1,2,supernatant 0%,37.64583333,0
+PY1,10^1,2,supernatant 0%,48.70833333,0
+PY1,10^1,2,supernatant 10%,0,0
+PY1,10^1,2,supernatant 10%,6.875,0
+PY1,10^1,2,supernatant 10%,25.875,0
+PY1,10^1,2,supernatant 10%,28.75,1
+PY1,10^1,2,supernatant 10%,33.77083333,9
+PY1,10^1,2,supernatant 10%,37.64583333,9
+PY1,10^1,2,supernatant 10%,40.52083333,9
+PY1,10^1,2,supernatant 10%,44.70833333,9
+PY1,10^1,2,supernatant 10%,48.70833333,9
+PY1,10^1,2,supernatant 10%,56.625,9
+PY1,10^1,3,Cat+,65.95833333,0
+PY1,10^1,3,Cat+,87.91666667,1
+PY1,10^1,3,Cat+,109.7916667,1
+PY1,10^1,3,Cat+,130.6875,1
+PY1,10^1,3,Cat+,135.8333333,2
+PY1,10^1,3,Cat+,145.7083333,2
+PY1,10^1,3,Cat+,166.7916667,3
+PY1,10^1,3,Cat+,207.8125,7
+PY1,10^1,3,Cat+,229.8541667,8
+PY1,10^1,3,Cat+,269.0208333,8
+PY1,10^1,3,supernatant 0%,0,0
+PY1,10^1,3,supernatant 0%,6.875,0
+PY1,10^1,3,supernatant 0%,37.64583333,0
+PY1,10^1,3,supernatant 0%,48.70833333,0
+PY1,10^1,3,supernatant 10%,0,0
+PY1,10^1,3,supernatant 10%,6.875,0
+PY1,10^1,3,supernatant 10%,25.875,0
+PY1,10^1,3,supernatant 10%,28.75,8
+PY1,10^1,3,supernatant 10%,33.77083333,11
+PY1,10^1,3,supernatant 10%,37.64583333,11
+PY1,10^1,3,supernatant 10%,40.52083333,11
+PY1,10^1,3,supernatant 10%,44.70833333,11
+PY1,10^1,3,supernatant 10%,48.70833333,11
+PY1,10^1,3,supernatant 10%,56.625,11
+PY1,10^3,1,Cat+,8.916666667,0
+PY1,10^3,1,Cat+,16.58333333,0
+PY1,10^3,1,Cat+,29.8125,3
+PY1,10^3,1,Cat+,32.66666667,5
+PY1,10^3,1,Cat+,36.79166667,6
+PY1,10^3,1,Cat+,43.66666667,7
+PY1,10^3,1,Cat+,50.875,7
+PY1,10^3,1,Cat+,58.60416667,8
+PY1,10^3,1,Cat+,65.89583333,10
+PY1,10^3,1,Cat+,72.77083333,11
+PY1,10^3,1,Cat+,79.58333333,12
+PY1,10^3,1,Cat+,86.83333333,12
+PY1,10^3,1,Cat+,92.70833333,12
+PY1,10^3,1,Cat+,107.75,12
+PY1,10^3,1,Cat+,115.7916667,12
+PY1,10^3,1,supernatant 0%,0,0
+PY1,10^3,1,supernatant 0%,5.8125,0
+PY1,10^3,1,supernatant 0%,12.64583333,0
+PY1,10^3,1,supernatant 0%,23.875,0
+PY1,10^3,1,supernatant 0%,33.77083333,3
+PY1,10^3,1,supernatant 0%,37.64583333,3
+PY1,10^3,1,supernatant 0%,40.52083333,3
+PY1,10^3,1,supernatant 0%,44.70833333,3
+PY1,10^3,1,supernatant 0%,48.70833333,3
+PY1,10^3,1,supernatant 0%,56.625,3
+PY1,10^3,1,supernatant 10%,0,0
+PY1,10^3,1,supernatant 10%,5.8125,0
+PY1,10^3,1,supernatant 10%,12.64583333,0
+PY1,10^3,1,supernatant 10%,15.60416667,0
+PY1,10^3,1,supernatant 10%,18.83333333,4
+PY1,10^3,1,supernatant 10%,20.79166667,12
+PY1,10^3,1,supernatant 10%,23.875,12
+PY1,10^3,1,supernatant 10%,25.875,12
+PY1,10^3,1,supernatant 10%,28.75,12
+PY1,10^3,2,Cat+,8.916666667,0
+PY1,10^3,2,Cat+,16.58333333,0
+PY1,10^3,2,Cat+,29.8125,1
+PY1,10^3,2,Cat+,32.66666667,3
+PY1,10^3,2,Cat+,36.79166667,3
+PY1,10^3,2,Cat+,43.66666667,4
+PY1,10^3,2,Cat+,50.875,5
+PY1,10^3,2,Cat+,58.60416667,7
+PY1,10^3,2,Cat+,65.89583333,11
+PY1,10^3,2,Cat+,72.77083333,11
+PY1,10^3,2,Cat+,73.89583333,11
+PY1,10^3,2,Cat+,79.58333333,12
+PY1,10^3,2,Cat+,86.83333333,12
+PY1,10^3,2,Cat+,92.70833333,12
+PY1,10^3,2,Cat+,107.75,12
+PY1,10^3,2,Cat+,115.7916667,12
+PY1,10^3,2,supernatant 0%,0,0
+PY1,10^3,2,supernatant 0%,5.8125,0
+PY1,10^3,2,supernatant 0%,12.64583333,0
+PY1,10^3,2,supernatant 0%,23.875,0
+PY1,10^3,2,supernatant 0%,33.77083333,2
+PY1,10^3,2,supernatant 0%,37.64583333,5
+PY1,10^3,2,supernatant 0%,40.52083333,5
+PY1,10^3,2,supernatant 0%,44.70833333,5
+PY1,10^3,2,supernatant 0%,48.70833333,5
+PY1,10^3,2,supernatant 0%,56.625,6
+PY1,10^3,2,supernatant 10%,0,0
+PY1,10^3,2,supernatant 10%,5.8125,0
+PY1,10^3,2,supernatant 10%,12.64583333,0
+PY1,10^3,2,supernatant 10%,15.60416667,0
+PY1,10^3,2,supernatant 10%,18.83333333,0
+PY1,10^3,2,supernatant 10%,20.79166667,12
+PY1,10^3,2,supernatant 10%,23.875,12
+PY1,10^3,2,supernatant 10%,25.875,12
+PY1,10^3,2,supernatant 10%,28.75,12
+PY1,10^3,3,Cat+,8.916666667,0
+PY1,10^3,3,Cat+,16.58333333,0
+PY1,10^3,3,Cat+,29.8125,1
+PY1,10^3,3,Cat+,32.66666667,3
+PY1,10^3,3,Cat+,36.79166667,4
+PY1,10^3,3,Cat+,43.66666667,6
+PY1,10^3,3,Cat+,50.875,9
+PY1,10^3,3,Cat+,57.875,9
+PY1,10^3,3,Cat+,65.89583333,9
+PY1,10^3,3,Cat+,72.77083333,12
+PY1,10^3,3,Cat+,79.58333333,12
+PY1,10^3,3,Cat+,86.83333333,12
+PY1,10^3,3,Cat+,92.70833333,12
+PY1,10^3,3,Cat+,107.75,12
+PY1,10^3,3,Cat+,115.7916667,12
+PY1,10^3,3,supernatant 0%,0,0
+PY1,10^3,3,supernatant 0%,5.8125,0
+PY1,10^3,3,supernatant 0%,12.64583333,0
+PY1,10^3,3,supernatant 0%,23.875,0
+PY1,10^3,3,supernatant 0%,33.77083333,1
+PY1,10^3,3,supernatant 0%,37.64583333,2
+PY1,10^3,3,supernatant 0%,40.52083333,2
+PY1,10^3,3,supernatant 0%,44.70833333,2
+PY1,10^3,3,supernatant 0%,48.70833333,3
+PY1,10^3,3,supernatant 0%,56.625,3
+PY1,10^3,3,supernatant 10%,0,0
+PY1,10^3,3,supernatant 10%,5.8125,0
+PY1,10^3,3,supernatant 10%,12.64583333,0
+PY1,10^3,3,supernatant 10%,15.60416667,0
+PY1,10^3,3,supernatant 10%,18.83333333,0
+PY1,10^3,3,supernatant 10%,20.79166667,12
+PY1,10^3,3,supernatant 10%,23.875,12
+PY1,10^3,3,supernatant 10%,25.875,12
+PY1,10^3,3,supernatant 10%,28.75,12
+PY1,10^5,1,Cat+,1.875,0
+PY1,10^5,1,Cat+,8.875,0
+PY1,10^5,1,Cat+,12.625,12
+PY1,10^5,1,Cat+,15.95833333,12
+PY1,10^5,1,Cat+,25.91666667,12
+PY1,10^5,1,supernatant 0%,0,0
+PY1,10^5,1,supernatant 0%,4.6875,0
+PY1,10^5,1,supernatant 0%,7.833333333,0
+PY1,10^5,1,supernatant 0%,9.875,0
+PY1,10^5,1,supernatant 0%,12.64583333,0
+PY1,10^5,1,supernatant 0%,15.60416667,0
+PY1,10^5,1,supernatant 0%,18.83333333,2
+PY1,10^5,1,supernatant 0%,20.79166667,9
+PY1,10^5,1,supernatant 0%,23.875,12
+PY1,10^5,1,supernatant 0%,25.875,12
+PY1,10^5,1,supernatant 0%,28.75,12
+PY1,10^5,1,supernatant 0%,33.77083333,12
+PY1,10^5,1,supernatant 0%,37.64583333,12
+PY1,10^5,1,supernatant 10%,0,0
+PY1,10^5,1,supernatant 10%,4.6875,0
+PY1,10^5,1,supernatant 10%,7.833333333,0
+PY1,10^5,1,supernatant 10%,9.875,12
+PY1,10^5,1,supernatant 10%,12.64583333,12
+PY1,10^5,1,supernatant 10%,15.60416667,12
+PY1,10^5,1,supernatant 10%,18.83333333,12
+PY1,10^5,1,supernatant 10%,20.79166667,12
+PY1,10^5,1,supernatant 10%,23.875,12
+PY1,10^5,2,Cat+,1.875,0
+PY1,10^5,2,Cat+,8.875,0
+PY1,10^5,2,Cat+,12.625,12
+PY1,10^5,2,Cat+,15.95833333,12
+PY1,10^5,2,Cat+,25.91666667,12
+PY1,10^5,2,supernatant 0%,0,0
+PY1,10^5,2,supernatant 0%,4.6875,0
+PY1,10^5,2,supernatant 0%,7.833333333,0
+PY1,10^5,2,supernatant 0%,9.875,0
+PY1,10^5,2,supernatant 0%,12.64583333,0
+PY1,10^5,2,supernatant 0%,15.60416667,0
+PY1,10^5,2,supernatant 0%,18.83333333,0
+PY1,10^5,2,supernatant 0%,20.79166667,0
+PY1,10^5,2,supernatant 0%,23.875,12
+PY1,10^5,2,supernatant 0%,25.875,12
+PY1,10^5,2,supernatant 0%,28.75,12
+PY1,10^5,2,supernatant 0%,33.77083333,12
+PY1,10^5,2,supernatant 0%,37.64583333,12
+PY1,10^5,2,supernatant 10%,0,0
+PY1,10^5,2,supernatant 10%,4.6875,0
+PY1,10^5,2,supernatant 10%,7.833333333,0
+PY1,10^5,2,supernatant 10%,9.875,0
+PY1,10^5,2,supernatant 10%,12.64583333,12
+PY1,10^5,2,supernatant 10%,15.60416667,12
+PY1,10^5,2,supernatant 10%,18.83333333,12
+PY1,10^5,2,supernatant 10%,20.79166667,12
+PY1,10^5,2,supernatant 10%,23.875,12
+PY1,10^5,3,Cat+,1.875,0
+PY1,10^5,3,Cat+,8.875,0
+PY1,10^5,3,Cat+,12.625,12
+PY1,10^5,3,Cat+,15.95833333,12
+PY1,10^5,3,Cat+,25.91666667,12
+PY1,10^5,3,supernatant 0%,0,0
+PY1,10^5,3,supernatant 0%,4.6875,0
+PY1,10^5,3,supernatant 0%,7.833333333,0
+PY1,10^5,3,supernatant 0%,9.875,0
+PY1,10^5,3,supernatant 0%,12.64583333,0
+PY1,10^5,3,supernatant 0%,15.60416667,0
+PY1,10^5,3,supernatant 0%,18.83333333,0
+PY1,10^5,3,supernatant 0%,20.79166667,2
+PY1,10^5,3,supernatant 0%,23.875,12
+PY1,10^5,3,supernatant 0%,25.875,12
+PY1,10^5,3,supernatant 0%,28.75,12
+PY1,10^5,3,supernatant 0%,33.77083333,12
+PY1,10^5,3,supernatant 0%,37.64583333,12
+PY1,10^5,3,supernatant 10%,0,0
+PY1,10^5,3,supernatant 10%,4.6875,0
+PY1,10^5,3,supernatant 10%,7.833333333,0
+PY1,10^5,3,supernatant 10%,9.875,12
+PY1,10^5,3,supernatant 10%,12.64583333,12
+PY1,10^5,3,supernatant 10%,15.60416667,12
+PY1,10^5,3,supernatant 10%,18.83333333,12
+PY1,10^5,3,supernatant 10%,20.79166667,12
+PY1,10^5,3,supernatant 10%,23.875,12
+europaea,10^1,1,normal,0,0
+europaea,10^1,1,normal,11.25,0
+europaea,10^1,1,normal,13.16666667,8
+europaea,10^1,1,normal,15.83333333,12
+europaea,10^1,1,normal,19.16666667,12
+europaea,10^1,2,normal,0,0
+europaea,10^1,2,normal,11.25,0
+europaea,10^1,2,normal,13.16666667,8
+europaea,10^1,2,normal,15.83333333,12
+europaea,10^1,2,normal,19.16666667,12
+europaea,10^1,3,normal,0,0
+europaea,10^1,3,normal,11.25,1
+europaea,10^1,3,normal,13.16666667,8
+europaea,10^1,3,normal,15.83333333,12
+europaea,10^1,3,normal,19.16666667,12
+europaea,10^3,1,normal,0,0
+europaea,10^3,1,normal,6.083333333,1
+europaea,10^3,1,normal,7.875,12
+europaea,10^3,1,normal,11.20833333,12
+europaea,10^3,2,normal,0,0
+europaea,10^3,2,normal,6.083333333,1
+europaea,10^3,2,normal,7.875,12
+europaea,10^3,2,normal,11.20833333,12
+europaea,10^3,3,normal,0,0
+europaea,10^3,3,normal,6.083333333,5
+europaea,10^3,3,normal,7.875,12
+europaea,10^3,3,normal,11.20833333,12
+europaea,10^5,1,normal,0,0
+europaea,10^5,1,normal,6.083333333,12
+europaea,10^5,1,normal,7.875,12
+europaea,10^5,1,normal,11.20833333,12
+europaea,10^5,2,normal,0,0
+europaea,10^5,2,normal,6.083333333,12
+europaea,10^5,2,normal,7.875,12
+europaea,10^5,2,normal,11.20833333,12
+europaea,10^5,3,normal,0,0
+europaea,10^5,3,normal,6.083333333,12
+europaea,10^5,3,normal,7.875,12
+europaea,10^5,3,normal,11.20833333,12
