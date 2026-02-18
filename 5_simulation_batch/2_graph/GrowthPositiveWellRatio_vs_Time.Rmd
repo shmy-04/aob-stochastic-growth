@@ -300,6 +300,7 @@ exp_data_mutate <-
 exp_data_summarize <-
   exp_data_mutate %>%
   group_by(Specie, CellDensity, Condition, source, Day) %>%
+  filter(n_distinct(N) == 3) %>% # select N=3 data
   summarise(mean = mean(awake_well_ratio),
             sd = sd(awake_well_ratio),
             n = n()) %>%
