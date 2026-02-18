@@ -121,9 +121,6 @@
 <polyline points='231.16,66.16 237.48,66.16 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
 <polyline points='234.32,66.16 234.32,97.28 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
 <polyline points='231.16,97.28 237.48,97.28 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
-<polyline points='239.60,72.33 245.92,72.33 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
-<polyline points='242.76,72.33 242.76,83.33 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
-<polyline points='239.60,83.33 245.92,83.33 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
 <polyline points='247.56,50.59 253.88,50.59 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
 <polyline points='250.72,50.59 250.72,66.16 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
 <polyline points='247.56,66.16 253.88,66.16 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
@@ -145,7 +142,7 @@
 <polyline points='302.04,42.81 308.36,42.81 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
 <polyline points='305.20,42.81 305.20,42.81 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
 <polyline points='302.04,42.81 308.36,42.81 ' style='stroke-width: 1.07; stroke: #FA8072; stroke-linecap: butt;' />
-<polyline points='188.50,136.19 196.87,136.19 211.32,123.22 214.43,107.66 218.94,102.47 226.45,92.09 234.32,81.72 241.96,66.16 242.76,77.83 250.72,58.38 258.23,48.00 259.45,50.59 265.66,42.81 273.58,42.81 280.00,42.81 296.42,42.81 305.20,42.81 ' style='stroke-width: 0.53; stroke: #FA8072; stroke-linecap: butt;' />
+<polyline points='188.50,136.19 196.87,136.19 211.32,123.22 214.43,107.66 218.94,102.47 226.45,92.09 234.32,81.72 250.72,58.38 258.23,48.00 265.66,42.81 273.58,42.81 280.00,42.81 296.42,42.81 305.20,42.81 ' style='stroke-width: 0.53; stroke: #FA8072; stroke-linecap: butt;' />
 <circle cx='188.50' cy='136.19' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='196.87' cy='136.19' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='211.32' cy='123.22' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
@@ -153,11 +150,8 @@
 <circle cx='218.94' cy='102.47' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='226.45' cy='92.09' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='234.32' cy='81.72' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
-<circle cx='241.96' cy='66.16' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
-<circle cx='242.76' cy='77.83' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='250.72' cy='58.38' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='258.23' cy='48.00' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
-<circle cx='259.45' cy='50.59' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='265.66' cy='42.81' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='273.58' cy='42.81' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='280.00' cy='42.81' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
