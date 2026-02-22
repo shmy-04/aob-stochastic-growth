@@ -108,8 +108,7 @@ rawdata_mutate <-
 rawdata_filter <- 
   rawdata_mutate %>% 
   filter(Specie == "PY1" & Condition == "noCFS_Cat" |
-           Specie == "PY1" & Condition == "CFS_Cat" |
-           Specie == "PY1" & Condition == "noCFS_Cat_ctrl")
+           Specie == "PY1" & Condition == "CFS_Cat" )
 ```
 
 ```{r import simulation data}
@@ -238,7 +237,6 @@ rawdata_merge_mutate = rawdata_filter %>%
   mutate(Condition = case_when(
            Condition == "noCFS_Cat" ~ "CFS-",
            Condition == "CFS_Cat" ~ "CFS+",
-           Condition == "CFS_Cat_ctrl" ~ "CFS-_NC",
            TRUE ~ NA_character_
            ),
          source = "exp") %>% 
@@ -318,7 +316,6 @@ labeli <- as_labeller(c(
   `10^1` = "10^1",
   `10^0` = "0",
   `CFS_Cat` = "'CFS +'",
-  `noCFS_Cat_ctrl` = "'CFS -'",
   `normal` = "'CFS -'",
   `1` = "'N = 1'",
   `2` = "'N = 2'",
