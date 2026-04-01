@@ -62,7 +62,7 @@ rawdata_sup <-
   read.csv(paste0(prefix, name, "summary_CFS.csv"))
 rawdata_merge = bind_rows(rawdata_noSup, rawdata_sup)
 
-prefix = "../../3_regression/regression_result/"
+prefix = "../../3_regression/CFS-/regression_result/"
 name = "1_fit_results.csv"
 fit = read.csv(paste0(prefix, name))
 ```
