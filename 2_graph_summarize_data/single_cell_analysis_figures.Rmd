@@ -403,10 +403,10 @@ ggsave(file.path(folder_path, paste0(base_name, ".png")),
        figS2, width = 3.2, height = 7.2, units = "in", device = "png", dpi = 600)
 ```
 
-# cell tragectory
+# cell trajectory
 # deltaVt vs generation time
 ```{r }
-plot_biomassProduction_vs_generationTime_mergeRep <- function(data){
+plot_biomassProduction_vs_generationTime_mergeRep <- function(data, IF_limits){
   data = data 
   
   if(nrow(data) == 0){
@@ -443,25 +443,6 @@ plot_biomassProduction_vs_generationTime_mergeRep <- function(data){
                     group = Specie),
                 method = "lm", se = FALSE, color = "black") +
     
-    # max, min
-    geom_hline(data = limits, aes(yintercept = y_max), linetype = "dashed") +
-    geom_hline(data = limits, aes(yintercept = y_min), linetype = "dashed") +
-    
-    # label
-    geom_text(data = limits,
-              aes(x = x_label * 0.95,
-                  y = y_label * 0.95,
-                  label = paste0(
-                    "Max = ", sprintf("%.1f", y_max),
-                    "\nMin = ", sprintf("%.1f", y_min),
-                    "\nr = ", sprintf("%.2f", r)
-                    )),
-              inherit.aes = FALSE,
-              color = "black",
-              hjust = 1,
-              vjust = 1,
-              size = 2.5) +
-    
     scale_fill_manual(values = my_colors) + 
     scale_x_continuous(
       breaks = seq(0, 1.5 * 10^6, by = 5 * 10^5),
@@ -475,15 +456,61 @@ plot_biomassProduction_vs_generationTime_mergeRep <- function(data){
         ),
       y = expression(paste("Generation time, ", italic("T"), " (h)"))
       ) 
+  
+    # --- optional lines ---
+    if (IF_limits) {
+      biomassProduction_vs_generationTime_mergeRep <- 
+        biomassProduction_vs_generationTime_mergeRep +
+        geom_hline(data = limits, aes(yintercept = y_max), linetype = "dashed") +
+        geom_hline(data = limits, aes(yintercept = y_min), linetype = "dashed") +
+        
+        # label
+        geom_text(data = limits,
+                  aes(x = x_label * 0.95,
+                      y = y_label * 0.95,
+                      label = paste0(
+                        "Max = ", sprintf("%.1f", y_max),
+                        "\nMin = ", sprintf("%.1f", y_min),
+                        "\nr = ", sprintf("%.2f", r)
+                        )),
+                  inherit.aes = FALSE,
+                  color = "black",
+                  hjust = 1,
+                  vjust = 1,
+                  size = 2.5) 
+    }
+  
+    if (!IF_limits){
+      biomassProduction_vs_generationTime_mergeRep <- 
+        biomassProduction_vs_generationTime_mergeRep +
+        
+        # label
+        geom_text(data = limits,
+                  aes(x = x_label * 0.95,
+                      y = y_label * 0.95,
+                      label = paste0(
+                        "r = ", sprintf("%.2f", r)
+                        )),
+                  inherit.aes = FALSE,
+                  color = "black",
+                  hjust = 1,
+                  vjust = 1,
+                  size = 2.5)
+    }
+  
+  return(biomassProduction_vs_generationTime_mergeRep)
   }
 
 specie_list = c("europaea", "PY1")
 Gtime_noSup_plots <- list()
+Gtime_noSup_plots_noLimits <- list()
 
 for (specie in specie_list){
+  # --- Limits line ---
+  IF_limits <- TRUE
   plot_noSup <- 
     plot_biomassProduction_vs_generationTime_mergeRep(
-      subset(summarize_data_Gn, Condition == "no-supernatant" & Specie == specie)
+      subset(summarize_data_Gn, Condition == "no-supernatant" & Specie == specie), IF_limits
       )
   
   base_name <- "fig2AD_biomassProduction_vs_generationTime_noSup"
@@ -496,13 +523,25 @@ for (specie in specie_list){
   
   ggsave(file.path(folder_path, paste0(base_name, "_", specie, ".png")),
          plot = Gtime_noSup, width = 3.2, height = 2.4, units = "in", device = "png", dpi = 600)
+  
+  # --- No limits line ---
+  IF_limits <- FALSE
+  plot_noSup_noLimits <- 
+    plot_biomassProduction_vs_generationTime_mergeRep(
+      subset(summarize_data_Gn, Condition == "no-supernatant" & Specie == specie), IF_limits
+      )
+  
+  Gtime_noSup_noLimits <- plot_noSup_noLimits+mytheme_paper
+  Gtime_noSup_plots_noLimits[[specie]] <- Gtime_noSup_noLimits
 }
 ```
 
 ```{r }
+# --- Limits line ---
+IF_limits <- TRUE
 plot_sup <- 
   plot_biomassProduction_vs_generationTime_mergeRep(
-    subset(summarize_data_Gn, Condition == "supernatant")
+    subset(summarize_data_Gn, Condition == "supernatant"), IF_limits
     )
 
 base_name <- "fig3B_biomassProduction_vs_generationTime_sup"
@@ -515,6 +554,14 @@ ggsave(file.path(folder_path, paste0(base_name, ".svg")),
 ggsave(file.path(folder_path, paste0(base_name, ".png")),
        plot = Gtime_sup,
        width = 3.2, height = 2.4, units = "in", device = "png", dpi = 600)
+
+# --- No limits line ---
+IF_limits <- FALSE
+plot_sup_noLimits <- 
+  plot_biomassProduction_vs_generationTime_mergeRep(
+    subset(summarize_data_Gn, Condition == "supernatant"), IF_limits
+    )
+Gtime_sup_noLimits <- plot_sup_noLimits+mytheme_paper
 ```
 
 # deltaVt vs elongation rate
@@ -856,6 +903,23 @@ ggsave(file.path(folder_path, paste0(base_name, ".svg")),
 
 ggsave(file.path(folder_path, paste0(base_name, ".png")),
        fig3, width = 3.2, height = 7.2, units = "in", device = "png", dpi = 600)
+```
+
+```{r }
+library(patchwork)
+figS17 <- (
+  (Ad_noSup_plots[["PY1"]] / Gtime_noSup_plots_noLimits[["PY1"]] / Elongation_noSup_plots[["PY1"]] ) | 
+    (Ad_sup / Gtime_sup_noLimits / Elongation_sup)
+    ) +
+  plot_annotation(tag_levels = 'A')
+base_name = "figS17"
+
+# save
+ggsave(file.path(folder_path, paste0(base_name, ".svg")),
+       figS17, width = 6.4, height = 7.2, units = "in", device = "svg")
+
+ggsave(file.path(folder_path, paste0(base_name, ".png")),
+       figS17, width = 6.4, height = 7.2, units = "in", device = "png", dpi = 600)
 ```
 
 # division ratio
