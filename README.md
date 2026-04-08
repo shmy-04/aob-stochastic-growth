@@ -3,7 +3,7 @@ Single-cell–based analysis and stochastic growth modeling of ammonia-oxidizing
 
 ## Purpose
 This repository contains analysis and simulation code used in the manuscript  
-"Environment-responsive single-cell growth dynamics drive stochastic and deterministic population establishment in ammonia-oxidizing bacteria".
+"Environment-responsive individual cell growth behavior shapes stochastic and deterministic population establishment in ammonia-oxidizing bacteria".
 
 ## Contents
 - `0_rawdata/`: single-cell trajectory data and time-series data of cell biomass for each FOV and strain.
