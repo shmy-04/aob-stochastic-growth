@@ -888,6 +888,9 @@ ggsave(file.path(folder_path, paste0(base_name, ".svg")),
 
 ggsave(file.path(folder_path, paste0(base_name, ".png")),
        fig2, width = 6.4, height = 7.2, units = "in", device = "png", dpi = 600)
+
+ggsave(file.path(folder_path, paste0(base_name, ".pdf")),
+       fig2, width = 6.4, height = 7.2, units = "in", device = "pdf", dpi = 600)
 ```
 
 ```{r }
