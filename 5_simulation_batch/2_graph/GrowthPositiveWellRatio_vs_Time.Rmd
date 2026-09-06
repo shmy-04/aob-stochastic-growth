@@ -388,7 +388,7 @@ lineplot_CFS_basic <-
   scale_y_continuous(limits = c(-0.05, 1.05),
                      breaks = seq(0, 1, by = 0.5)) +
   labs(x = "Incubation time (day)",
-       y = "Fraction of wells\nproducing >0.25 mM nitrite",
+       y = "Fraction of wells with\nnitrite production ≥0.25 mM",
        title = "") +
   facet_nested(. ~ CellDensity,
                labeller = labeli,
@@ -456,7 +456,7 @@ lineplot_noCFS_basic <-
   scale_y_continuous(limits = c(-0.05, 1.05),
                      breaks = seq(0, 1, by = 0.5)) +
   labs(x = "Incubation time (day)",
-       y = "Fraction of wells\nproducing >0.25 mM nitrite",
+       y = "Fraction of wells with\nnitrite production ≥0.25 mM",
        title = "") +
   facet_nested(. ~ CellDensity,
                labeller = labeli,
@@ -524,7 +524,7 @@ lineplot_noCFS_weibull <-
   scale_y_continuous(limits = c(-0.05, 1.05),
                      breaks = seq(0, 1, by = 0.5)) +
   labs(x = "Incubation time (day)",
-       y = "Fraction of wells\nproducing >0.25 mM nitrite", 
+       y = "Fraction of wells with\nnitrite production ≥0.25 mM", 
        title = "") +
   facet_nested(. ~ CellDensity,
                labeller = labeli,
@@ -608,7 +608,7 @@ lineplot_noCFS_basic_noInitGrowth <-
   scale_y_continuous(limits = c(-0.05, 1.05),
                      breaks = seq(0, 1, by = 0.5)) +
   labs(x = "Incubation time (day)",
-       y = "Fraction of wells\nproducing >0.25 mM nitrite", 
+       y = "Fraction of wells with\nnitrite production ≥0.25 mM", 
        title = "") +
   facet_nested(. ~ CellDensity,
                labeller = labeli,
@@ -618,7 +618,7 @@ lineplot_noCFS_basic_noInitGrowth <-
  
 # lineplot_noCFS_basic_noInitGrowth
 
-base_name <- "figS.13_cumulative_wells_>0.25mM_Nitrite_CFS-_basic_noInitGrowth"
+base_name <- "figS.14_cumulative_wells_>0.25mM_Nitrite_CFS-_basic_noInitGrowth"
 
 ggsave(file.path(folder_path, paste0(base_name, ".svg")),
        plot = lineplot_noCFS_basic_noInitGrowth, width = 6.4, height = 2.4, units = "in", device = "svg")
@@ -677,7 +677,7 @@ lineplot_CFS_weibull <-
   scale_y_continuous(limits = c(-0.05, 1.05),
                      breaks = seq(0, 1, by = 0.5)) +
   labs(x = "Incubation time (day)",
-       y = "Fraction of wells\nproducing >0.25 mM nitrite", 
+       y = "Fraction of wells with\nnitrite production ≥0.25 mM", 
        title = "") +
   facet_nested(. ~ CellDensity,
                labeller = labeli,
@@ -745,7 +745,7 @@ plot_lineplot_CFS_lambda <- function(source_select, initial_condition_select){
     scale_y_continuous(limits = c(-0.05, 1.05),
                        breaks = seq(0, 1, by = 0.5)) +
     labs(x = "Incubation time (day)",
-         y = "Fraction of wells\nproducing >0.25 mM nitrite", 
+         y = "Fraction of wells with\nnitrite production ≥0.25 mM", 
          title = "") +
     facet_nested(. ~ CellDensity,
                  labeller = labeli,
@@ -765,7 +765,7 @@ for (source_select in source_select_list){
 ```
 
 ```{r }
-figS_12 <-  
+figS_13 <-  
   lineplot_CFS_lambda[["sim_basic"]][["originallambda"]] + plot_spacer() + lineplot_CFS_lambda[["sim_basic"]][["lambdaAdjusted"]] +
   plot_layout(widths = c(2, 1, 2)) +
   plot_annotation(tag_levels = list(c("G", "H"))) &
@@ -773,23 +773,23 @@ figS_12 <-
     plot.tag.position = c(0.01, 0.9),
     plot.margin = margin(t = 1, r = 1, b = 1, l = 1)
   )
-base_name = "figS.12_CFS_basic_lambda_G-H"
+base_name = "figS.13_CFS_basic_lambda_G-H"
 
 # save
 ggsave(file.path(folder_path, paste0(base_name, ".svg")),
-       figS_12, width = (3.2*2/3)*2.5*1.2, height = 2.4*1.2, units = "in", device = "svg")
+       figS_13, width = (3.2*2/3)*2.5*1.2, height = 2.4*1.2, units = "in", device = "svg")
 
 ggsave(file.path(folder_path, paste0(base_name, ".png")),
-       figS_12, width = (3.2*2/3)*2.5*1.2, height = 2.4*1.2, units = "in", device = "png", dpi = 600)
+       figS_13, width = (3.2*2/3)*2.5*1.2, height = 2.4*1.2, units = "in", device = "png", dpi = 600)
 
-figS_15 <- lineplot_CFS_weibull / (lineplot_CFS_lambda[["sim_weibull"]][["lambdaAdjusted"]] + plot_spacer() + plot_spacer()) +
+figS_16 <- lineplot_CFS_weibull / (lineplot_CFS_lambda[["sim_weibull"]][["lambdaAdjusted"]] + plot_spacer() + plot_spacer()) +
   plot_annotation(tag_levels = list(c("A", "B"))) 
-base_name = "figS.15_CFS_weibull"
+base_name = "figS.16_CFS_weibull"
 
 # save
 ggsave(file.path(folder_path, paste0(base_name, ".svg")),
-       figS_15, width = 6.4, height = 4.8, units = "in", device = "svg")
+       figS_16, width = 6.4, height = 4.8, units = "in", device = "svg")
 
 ggsave(file.path(folder_path, paste0(base_name, ".png")),
-       figS_15, width = 6.4, height = 4.8, units = "in", device = "png", dpi = 600)
+       figS_16, width = 6.4, height = 4.8, units = "in", device = "png", dpi = 600)
 ```

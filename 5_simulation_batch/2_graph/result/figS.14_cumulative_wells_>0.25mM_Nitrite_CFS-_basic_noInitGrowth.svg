@@ -67,15 +67,15 @@
 <circle cx='99.87' cy='42.81' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='116.06' cy='42.81' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='164.41' cy='42.81' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
-<polygon points='46.67,136.19 81.06,136.19 99.27,42.81 115.45,42.81 164.01,42.81 164.01,42.81 115.45,42.81 99.27,42.81 81.06,136.19 46.67,136.19 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #333333; fill-opacity: 0.25;' />
-<polyline points='46.67,136.19 81.06,136.19 99.27,42.81 115.45,42.81 164.01,42.81 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
-<polyline points='164.01,42.81 115.45,42.81 99.27,42.81 81.06,136.19 46.67,136.19 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
-<polyline points='46.67,136.19 81.06,136.19 99.27,42.81 115.45,42.81 164.01,42.81 ' style='stroke-width: 0.53; stroke: #000000; stroke-opacity: 0.75; stroke-linecap: butt;' />
+<polygon points='46.67,136.19 81.06,136.19 99.27,136.19 115.45,136.19 164.01,136.19 164.01,136.19 115.45,136.19 99.27,136.19 81.06,136.19 46.67,136.19 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #333333; fill-opacity: 0.25;' />
+<polyline points='46.67,136.19 81.06,136.19 99.27,136.19 115.45,136.19 164.01,136.19 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
+<polyline points='164.01,136.19 115.45,136.19 99.27,136.19 81.06,136.19 46.67,136.19 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
+<polyline points='46.67,136.19 81.06,136.19 99.27,136.19 115.45,136.19 164.01,136.19 ' style='stroke-width: 0.53; stroke: #000000; stroke-opacity: 0.75; stroke-linecap: butt;' />
 <polygon points='46.67,133.15 49.30,137.71 44.03,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
 <polygon points='81.06,133.15 83.69,137.71 78.43,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
-<polygon points='99.27,39.77 101.90,44.33 96.63,44.33 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
-<polygon points='115.45,39.77 118.08,44.33 112.82,44.33 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
-<polygon points='164.01,39.77 166.64,44.33 161.37,44.33 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
+<polygon points='99.27,133.15 101.90,137.71 96.63,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
+<polygon points='115.45,133.15 118.08,137.71 112.82,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
+<polygon points='164.01,133.15 166.64,137.71 161.37,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
 </g>
 <g clip-path='url(#cpMC4wMHw0NjAuODB8MC4wMHwxNzIuODA=)'>
 </g>
@@ -157,10 +157,10 @@
 <circle cx='280.00' cy='42.81' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='296.42' cy='42.81' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
 <circle cx='305.20' cy='42.81' r='1.95' style='stroke-width: 0.71; stroke: #FA8072; fill: #FA8072;' />
-<polygon points='188.32,136.19 196.96,136.19 211.52,136.19 214.25,136.19 218.80,136.19 226.54,136.19 234.27,136.19 242.92,136.19 250.65,136.19 258.38,136.19 265.66,136.19 273.40,136.19 279.77,136.19 296.60,42.81 305.25,42.81 305.25,42.81 296.60,42.81 279.77,136.19 273.40,136.19 265.66,136.19 258.38,136.19 250.65,136.19 242.92,136.19 234.27,136.19 226.54,136.19 218.80,136.19 214.25,136.19 211.52,136.19 196.96,136.19 188.32,136.19 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #333333; fill-opacity: 0.25;' />
-<polyline points='188.32,136.19 196.96,136.19 211.52,136.19 214.25,136.19 218.80,136.19 226.54,136.19 234.27,136.19 242.92,136.19 250.65,136.19 258.38,136.19 265.66,136.19 273.40,136.19 279.77,136.19 296.60,42.81 305.25,42.81 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
-<polyline points='305.25,42.81 296.60,42.81 279.77,136.19 273.40,136.19 265.66,136.19 258.38,136.19 250.65,136.19 242.92,136.19 234.27,136.19 226.54,136.19 218.80,136.19 214.25,136.19 211.52,136.19 196.96,136.19 188.32,136.19 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
-<polyline points='188.32,136.19 196.96,136.19 211.52,136.19 214.25,136.19 218.80,136.19 226.54,136.19 234.27,136.19 242.92,136.19 250.65,136.19 258.38,136.19 265.66,136.19 273.40,136.19 279.77,136.19 296.60,42.81 305.25,42.81 ' style='stroke-width: 0.53; stroke: #000000; stroke-opacity: 0.75; stroke-linecap: butt;' />
+<polygon points='188.32,136.19 196.96,136.19 211.52,136.19 214.25,136.19 218.80,136.19 226.54,136.19 234.27,136.19 242.92,136.19 250.65,136.19 258.38,136.19 265.66,136.19 273.40,136.19 279.77,136.19 296.60,136.19 305.25,136.19 305.25,136.19 296.60,136.19 279.77,136.19 273.40,136.19 265.66,136.19 258.38,136.19 250.65,136.19 242.92,136.19 234.27,136.19 226.54,136.19 218.80,136.19 214.25,136.19 211.52,136.19 196.96,136.19 188.32,136.19 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #333333; fill-opacity: 0.25;' />
+<polyline points='188.32,136.19 196.96,136.19 211.52,136.19 214.25,136.19 218.80,136.19 226.54,136.19 234.27,136.19 242.92,136.19 250.65,136.19 258.38,136.19 265.66,136.19 273.40,136.19 279.77,136.19 296.60,136.19 305.25,136.19 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
+<polyline points='305.25,136.19 296.60,136.19 279.77,136.19 273.40,136.19 265.66,136.19 258.38,136.19 250.65,136.19 242.92,136.19 234.27,136.19 226.54,136.19 218.80,136.19 214.25,136.19 211.52,136.19 196.96,136.19 188.32,136.19 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
+<polyline points='188.32,136.19 196.96,136.19 211.52,136.19 214.25,136.19 218.80,136.19 226.54,136.19 234.27,136.19 242.92,136.19 250.65,136.19 258.38,136.19 265.66,136.19 273.40,136.19 279.77,136.19 296.60,136.19 305.25,136.19 ' style='stroke-width: 0.53; stroke: #000000; stroke-opacity: 0.75; stroke-linecap: butt;' />
 <polygon points='188.32,133.15 190.95,137.71 185.69,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
 <polygon points='196.96,133.15 199.60,137.71 194.33,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
 <polygon points='211.52,133.15 214.15,137.71 208.89,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
@@ -174,8 +174,8 @@
 <polygon points='265.66,133.15 268.30,137.71 263.03,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
 <polygon points='273.40,133.15 276.03,137.71 270.77,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
 <polygon points='279.77,133.15 282.40,137.71 277.14,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
-<polygon points='296.60,39.77 299.24,44.33 293.97,44.33 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
-<polygon points='305.25,39.77 307.88,44.33 302.61,44.33 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
+<polygon points='296.60,133.15 299.24,137.71 293.97,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
+<polygon points='305.25,133.15 307.88,137.71 302.61,137.71 ' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.90; fill: #737373; fill-opacity: 0.90;' />
 </g>
 <g clip-path='url(#cpMC4wMHw0NjAuODB8MC4wMHwxNzIuODA=)'>
 </g>

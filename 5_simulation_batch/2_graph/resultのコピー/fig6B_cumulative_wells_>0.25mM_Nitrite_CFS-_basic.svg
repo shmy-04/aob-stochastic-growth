@@ -326,8 +326,8 @@
 <polyline points='35.64,89.50 38.38,89.50 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <polyline points='35.64,42.81 38.38,42.81 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <text x='246.85' y='166.43' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='74.75px' lengthAdjust='spacingAndGlyphs'>Incubation time (day)</text>
-<text transform='translate(12.10,89.50) rotate(-90)' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='74.28px' lengthAdjust='spacingAndGlyphs'>Fraction of wells with</text>
-<text transform='translate(20.74,89.50) rotate(-90)' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='96.94px' lengthAdjust='spacingAndGlyphs'>nitrite production ≥0.25 mM</text>
+<text transform='translate(12.10,89.50) rotate(-90)' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='57.83px' lengthAdjust='spacingAndGlyphs'>Fraction of wells</text>
+<text transform='translate(20.74,89.50) rotate(-90)' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='95.00px' lengthAdjust='spacingAndGlyphs'>producing &gt;0.25 mM nitrite</text>
 </g>
 </g>
 </svg>
