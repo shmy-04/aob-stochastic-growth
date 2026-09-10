@@ -388,7 +388,7 @@ lineplot_CFS_basic <-
   scale_y_continuous(limits = c(-0.05, 1.05),
                      breaks = seq(0, 1, by = 0.5)) +
   labs(x = "Incubation time (day)",
-       y = "Fraction of wells with\nnitrite production ≥0.25 mM",
+       y = "Fraction of wells with\nnitrite production ≥ 0.25 mM",
        title = "") +
   facet_nested(. ~ CellDensity,
                labeller = labeli,
@@ -456,7 +456,7 @@ lineplot_noCFS_basic <-
   scale_y_continuous(limits = c(-0.05, 1.05),
                      breaks = seq(0, 1, by = 0.5)) +
   labs(x = "Incubation time (day)",
-       y = "Fraction of wells with\nnitrite production ≥0.25 mM",
+       y = "Fraction of wells with\nnitrite production ≥ 0.25 mM",
        title = "") +
   facet_nested(. ~ CellDensity,
                labeller = labeli,
@@ -524,7 +524,7 @@ lineplot_noCFS_weibull <-
   scale_y_continuous(limits = c(-0.05, 1.05),
                      breaks = seq(0, 1, by = 0.5)) +
   labs(x = "Incubation time (day)",
-       y = "Fraction of wells with\nnitrite production ≥0.25 mM", 
+       y = "Fraction of wells with\nnitrite production ≥ 0.25 mM", 
        title = "") +
   facet_nested(. ~ CellDensity,
                labeller = labeli,
@@ -608,7 +608,7 @@ lineplot_noCFS_basic_noInitGrowth <-
   scale_y_continuous(limits = c(-0.05, 1.05),
                      breaks = seq(0, 1, by = 0.5)) +
   labs(x = "Incubation time (day)",
-       y = "Fraction of wells with\nnitrite production ≥0.25 mM", 
+       y = "Fraction of wells with\nnitrite production ≥ 0.25 mM", 
        title = "") +
   facet_nested(. ~ CellDensity,
                labeller = labeli,
@@ -677,7 +677,7 @@ lineplot_CFS_weibull <-
   scale_y_continuous(limits = c(-0.05, 1.05),
                      breaks = seq(0, 1, by = 0.5)) +
   labs(x = "Incubation time (day)",
-       y = "Fraction of wells with\nnitrite production ≥0.25 mM", 
+       y = "Fraction of wells with\nnitrite production ≥ 0.25 mM", 
        title = "") +
   facet_nested(. ~ CellDensity,
                labeller = labeli,
@@ -745,7 +745,7 @@ plot_lineplot_CFS_lambda <- function(source_select, initial_condition_select){
     scale_y_continuous(limits = c(-0.05, 1.05),
                        breaks = seq(0, 1, by = 0.5)) +
     labs(x = "Incubation time (day)",
-         y = "Fraction of wells with\nnitrite production ≥0.25 mM", 
+         y = "Fraction of wells with\nnitrite production ≥ 0.25 mM", 
          title = "") +
     facet_nested(. ~ CellDensity,
                  labeller = labeli,

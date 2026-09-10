@@ -345,7 +345,7 @@
 <polyline points='49.79,58.13 52.53,58.13 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <text x='251.19' y='166.45' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='74.75px' lengthAdjust='spacingAndGlyphs'>Incubation time (day)</text>
 <text transform='translate(26.25,97.89) rotate(-90)' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='74.28px' lengthAdjust='spacingAndGlyphs'>Fraction of wells with</text>
-<text transform='translate(34.89,97.89) rotate(-90)' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='96.94px' lengthAdjust='spacingAndGlyphs'>nitrite production ≥0.25 mM</text>
+<text transform='translate(34.89,97.89) rotate(-90)' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='99.16px' lengthAdjust='spacingAndGlyphs'>nitrite production ≥ 0.25 mM</text>
 <text x='15.29' y='20.92' text-anchor='middle' style='font-size: 12.00px; font-weight: bold; font-family: "Helvetica";' textLength='8.67px' lengthAdjust='spacingAndGlyphs'>A</text>
 </g>
 <defs>
@@ -497,7 +497,7 @@
 <polyline points='49.79,225.43 52.53,225.43 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
 <text x='115.10' y='333.76' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='74.75px' lengthAdjust='spacingAndGlyphs'>Incubation time (day)</text>
 <text transform='translate(26.25,265.20) rotate(-90)' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='74.28px' lengthAdjust='spacingAndGlyphs'>Fraction of wells with</text>
-<text transform='translate(34.89,265.20) rotate(-90)' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='96.94px' lengthAdjust='spacingAndGlyphs'>nitrite production ≥0.25 mM</text>
+<text transform='translate(34.89,265.20) rotate(-90)' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='99.16px' lengthAdjust='spacingAndGlyphs'>nitrite production ≥ 0.25 mM</text>
 <text x='15.29' y='188.26' text-anchor='middle' style='font-size: 12.00px; font-weight: bold; font-family: "Helvetica";' textLength='8.67px' lengthAdjust='spacingAndGlyphs'>B</text>
 </g>
 <defs>
