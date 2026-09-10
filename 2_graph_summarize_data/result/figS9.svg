@@ -572,12 +572,12 @@
 <text x='142.81' y='155.94' text-anchor='middle' style='font-size: 6.50px; font-family: "Helvetica";' textLength='7.22px' lengthAdjust='spacingAndGlyphs'>60</text>
 <text x='182.96' y='155.94' text-anchor='middle' style='font-size: 6.50px; font-family: "Helvetica";' textLength='7.22px' lengthAdjust='spacingAndGlyphs'>90</text>
 <text x='137.23' y='168.26' text-anchor='middle' style='font-size: 8.00px; font-family: "Helvetica";' textLength='29.52px' lengthAdjust='spacingAndGlyphs'>Time (h)</text>
-<text transform='translate(28.46,130.71) rotate(-90)' style='font-size: 8.00px; font-family: "Helvetica";' textLength='72.08px' lengthAdjust='spacingAndGlyphs'>Total biomass area (</text>
-<text transform='translate(28.46,58.63) rotate(-90)' style='font-size: 8.00px; font-family: "Helvetica";' textLength='2.22px' lengthAdjust='spacingAndGlyphs'> </text>
-<text transform='translate(28.46,56.41) rotate(-90)' style='font-size: 8.00px; font-family: "Symbol";' textLength='4.61px' lengthAdjust='spacingAndGlyphs'>μ</text>
-<text transform='translate(28.46,51.80) rotate(-90)' style='font-size: 8.00px; font-family: "Helvetica";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>m</text>
-<text transform='translate(24.48,45.13) rotate(-90)' style='font-size: 5.60px; font-family: "Helvetica";' textLength='3.11px' lengthAdjust='spacingAndGlyphs'>2</text>
-<text transform='translate(28.46,42.02) rotate(-90)' style='font-size: 8.00px; font-family: "Helvetica";' textLength='2.67px' lengthAdjust='spacingAndGlyphs'>)</text>
+<text transform='translate(28.46,121.81) rotate(-90)' style='font-size: 8.00px; font-family: "Helvetica";' textLength='54.28px' lengthAdjust='spacingAndGlyphs'>Total cell area (</text>
+<text transform='translate(28.46,67.53) rotate(-90)' style='font-size: 8.00px; font-family: "Helvetica";' textLength='2.22px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(28.46,65.31) rotate(-90)' style='font-size: 8.00px; font-family: "Symbol";' textLength='4.61px' lengthAdjust='spacingAndGlyphs'>μ</text>
+<text transform='translate(28.46,60.70) rotate(-90)' style='font-size: 8.00px; font-family: "Helvetica";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>m</text>
+<text transform='translate(24.48,54.03) rotate(-90)' style='font-size: 5.60px; font-family: "Helvetica";' textLength='3.11px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text transform='translate(28.46,50.92) rotate(-90)' style='font-size: 8.00px; font-family: "Helvetica";' textLength='2.67px' lengthAdjust='spacingAndGlyphs'>)</text>
 <text x='15.29' y='20.92' text-anchor='middle' style='font-size: 12.00px; font-weight: bold; font-family: "Helvetica";' textLength='8.67px' lengthAdjust='spacingAndGlyphs'>A</text>
 </g>
 <defs>

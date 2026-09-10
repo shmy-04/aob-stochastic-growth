@@ -154,7 +154,7 @@ plot_time_vs_biomass_mergeRep <- function(data, specie){
     
     labs(
       x = "Time (h)", 
-      y = expression(paste( "Total biomass area (", " ", mu, "m"^2, ")" ))
+      y = expression(paste( "Total cell area (", " ", mu, "m"^2, ")" ))
          ) 
 }
  
