@@ -335,7 +335,7 @@ for (specie in specie_list){
   deltaVt_plot <- 
     plot_time_vs_biomassProduction_mergeRep(na.omit(data))
   
-  base_name <- "(exstra)_time_vs_meanElongationRate"
+  base_name <- "(exstra)_time_vs_biomassProduction"
   
   deltaVt_plot <- deltaVt_plot+mytheme_paper
   deltaVt_plots[[specie]] <- deltaVt_plot
@@ -357,7 +357,7 @@ for (specie in specie_list){
   deltaVt_plot <- 
     plot_time_vs_biomassProduction_mergeRep(na.omit(data))
   
-  base_name <- "(exstra)_time_vs_meanElongationRate_CFS"
+  base_name <- "(exstra)_time_vs_biomassProduction_CFS"
   
   deltaVt_plot <- deltaVt_plot+mytheme_paper
   deltaVt_plots_CFS[[specie]] <- deltaVt_plot
