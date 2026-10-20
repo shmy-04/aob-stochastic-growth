@@ -946,7 +946,7 @@ plot_histogram_of_divR <- function(data){
     scale_fill_manual(values = my_colors) +
     labs(
       x = expression(paste("Division ratio, ", italic("DR"))), 
-      y = "Count") +　
+      y = "Count") +
   facet_nested(. ~ Condition + Specie ,
                labeller = labeli,
                nest_line = TRUE,
@@ -967,3 +967,52 @@ ggsave(file.path(folder_path, paste0(base_name, ".png")),
        width = 6.4, height = 2.4, units = "in", device = "png", dpi = 600)
 ```
 
+# deltaA vs generation time vs elongation rate
+```{r }
+plot_3D <- function(data){
+
+  if(nrow(data) == 0){
+    message("Skipping: No data")
+    return(NULL)
+  }
+
+  p <- plot_ly(
+    data = data,
+    x = ~fitted_elongation_rate,
+    y = ~fitted_deltaA,
+    z = ~generation_time,
+    color = ~Specie,
+    colors = my_colors,
+    type = "scatter3d",
+    mode = "markers",
+    marker = list(
+      size = 4,
+      opacity = 0.7,
+      line = list(
+        color = "black",
+        width = 0.5
+      )
+    )
+  ) %>%
+    layout(
+      scene = list(
+        xaxis = list(title = "Elongation rate"),
+        yaxis = list(title = "DeltaA"),
+        zaxis = list(title = "Generation time")
+      )
+    )
+
+  return(p)
+}
+```
+
+# turn on when 3D plot needed
+```{r }
+# plot_3D(
+#   subset(
+#     summarize_data_Gn,
+#     Condition == "no-supernatant" &
+#     Specie == "PY1"
+#   )
+# )
+```
