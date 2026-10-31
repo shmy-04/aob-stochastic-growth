@@ -112,7 +112,14 @@ my_colors <- c("PY1" = "salmon", "europaea" = "royalblue",
                "PY1.1" = "lightsalmon", "PY1.2" = "salmon", "PY1.3" = "salmon4",
                "europaea.1" = "lightblue", "europaea.2" = "royalblue1", "europaea.3" = "navy"
                )
-my_shapes <- c("1" = 21, "2" = 22, "3" = 24)
+
+my_shapes <- c("PY1.1" = 21, "PY1.2" = 22, "PY1.3" = 23,
+               "europaea.1" = 21, "europaea.2" = 22, "europaea.3" = 23
+               )
+
+rep_labels <- c("PY1.1" = "1", "PY1.2" = "2", "PY1.3" = "3",
+                "europaea.1" = "1", "europaea.2" = "2", "europaea.3" = "3"
+                )
 
 # set order
 biomass_data$Specie <- factor(biomass_data$Specie, levels = c("PY1", "europaea"))
@@ -143,14 +150,14 @@ plot_time_vs_biomass_mergeRep <- function(data, specie){
     geom_line(aes(color = rep_key),
               alpha = 0.6, linewidth = 0.4) +  
     geom_point(aes(fill = rep_key,
-                   shape = as.factor(replicate) 
+                   shape = rep_key
                      ),
                size = 1.0, alpha = 0.6, 
                color = "black", stroke = 0.4) +
     
-    scale_color_manual(values = my_colors) +
-    scale_fill_manual(values = my_colors) +
-    scale_shape_manual(values = my_shapes) +
+    scale_color_manual(name = "Biological replicate", values = my_colors, labels = rep_labels) +
+    scale_fill_manual(name = "Biological replicate", values = my_colors, labels = rep_labels) +
+    scale_shape_manual(name = "Biological replicate", values = my_shapes, labels = rep_labels) +
     
     labs(
       x = "Time (h)", 
@@ -168,7 +175,14 @@ for (specie in specie_list){
   
   base_name <- "(exstra)_time_vs_biomass"
   
-  biomass_plot <- biomass_plot+mytheme_paper
+  biomass_plot <- biomass_plot+mytheme_paper+
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.03, 0.97),
+          legend.justification = c(0, 1),
+          legend.title = element_text(family = "Helvetica", size = 6, color = "black", margin = margin(b = 3)),
+          legend.key.height = unit(0.25, "cm"),
+          legend.spacing.y = unit(0, "cm")
+          )
   biomass_plots[[specie]] <- biomass_plot
   
   ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
@@ -190,7 +204,14 @@ for (specie in specie_list){
   
   base_name <- "(exstra)_time_vs_biomass_CFS"
   
-  biomass_plot <- biomass_plot+mytheme_paper
+  biomass_plot <- biomass_plot+mytheme_paper+
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.03, 0.97),
+          legend.justification = c(0, 1),
+          legend.title = element_text(family = "Helvetica", size = 6, color = "black", margin = margin(b = 3)),
+          legend.key.height = unit(0.25, "cm"),
+          legend.spacing.y = unit(0, "cm")
+          )
   biomass_plots_CFS[[specie]] <- biomass_plot
   
   ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
@@ -223,14 +244,14 @@ plot_time_vs_meanElongationRate_mergeRep <- function(data){
     geom_line(aes(color = rep_key),
               alpha = 0.6, linewidth = 0.4) +  
     geom_point(aes(fill = rep_key,
-                   shape = as.factor(replicate) 
+                   shape = rep_key
                      ),
                size = 1.0, alpha = 0.6, 
                color = "black", stroke = 0.4) +
     
-    scale_color_manual(values = my_colors) +
-    scale_fill_manual(values = my_colors) +
-    scale_shape_manual(values = my_shapes) +
+    scale_color_manual(name = "Biological replicate", values = my_colors, labels = rep_labels) +
+    scale_fill_manual(name = "Biological replicate", values = my_colors, labels = rep_labels) +
+    scale_shape_manual(name = "Biological replicate", values = my_shapes, labels = rep_labels) +
     
     labs(
       x = "Time (h)", 
@@ -249,7 +270,14 @@ for (specie in specie_list){
   
   base_name <- "(exstra)_time_vs_meanElongationRate"
   
-  elongation_rate_plot <- elongation_rate_plot+mytheme_paper
+  elongation_rate_plot <- elongation_rate_plot+mytheme_paper+
+    theme(legend.position = "inside",
+          legend.position.inside = if (specie == "europaea") c(0.97, 0.97) else c(0.03, 0.97),
+          legend.justification = if (specie == "europaea") c(1, 1) else c(0, 1),
+          legend.title = element_text(family = "Helvetica", size = 6, color = "black", margin = margin(b = 3)),
+          legend.key.height = unit(0.25, "cm"),
+          legend.spacing.y = unit(0, "cm")
+          )
   elongation_rate_plots[[specie]] <- elongation_rate_plot
   
   ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
@@ -271,7 +299,14 @@ for (specie in specie_list){
   
   base_name <- "(exstra)_time_vs_meanElongationRate_CFS"
   
-  elongation_rate_plot <- elongation_rate_plot+mytheme_paper
+  elongation_rate_plot <- elongation_rate_plot+mytheme_paper+
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.03, 0.97),
+          legend.justification = c(0, 1),
+          legend.title = element_text(family = "Helvetica", size = 6, color = "black", margin = margin(b = 3)),
+          legend.key.height = unit(0.25, "cm"),
+          legend.spacing.y = unit(0, "cm")
+          )
   elongation_rate_plots_CFS[[specie]] <- elongation_rate_plot
   
   ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
@@ -304,14 +339,14 @@ plot_time_vs_biomassProduction_mergeRep <- function(data){
     geom_line(aes(color = rep_key),
               alpha = 0.6, linewidth = 0.4) +  
     geom_point(aes(fill = rep_key,
-                   shape = as.factor(replicate) 
+                   shape = rep_key
                      ),
                size = 1.0, alpha = 0.6, 
                color = "black", stroke = 0.4) +
     
-    scale_color_manual(values = my_colors) +
-    scale_fill_manual(values = my_colors) +
-    scale_shape_manual(values = my_shapes) +
+    scale_color_manual(name = "Biological replicate", values = my_colors, labels = rep_labels) +
+    scale_fill_manual(name = "Biological replicate", values = my_colors, labels = rep_labels) +
+    scale_shape_manual(name = "Biological replicate", values = my_shapes, labels = rep_labels) +
     
     scale_y_continuous(
       labels = label_number(scale = 1e-6),
@@ -337,7 +372,14 @@ for (specie in specie_list){
   
   base_name <- "(exstra)_time_vs_biomassProduction"
   
-  deltaVt_plot <- deltaVt_plot+mytheme_paper
+  deltaVt_plot <- deltaVt_plot+mytheme_paper+
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.03, 0.97),
+          legend.justification = c(0, 1),
+          legend.title = element_text(family = "Helvetica", size = 6, color = "black", margin = margin(b = 3)),
+          legend.key.height = unit(0.25, "cm"),
+          legend.spacing.y = unit(0, "cm")
+          )
   deltaVt_plots[[specie]] <- deltaVt_plot
   
   ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
@@ -359,7 +401,14 @@ for (specie in specie_list){
   
   base_name <- "(exstra)_time_vs_biomassProduction_CFS"
   
-  deltaVt_plot <- deltaVt_plot+mytheme_paper
+  deltaVt_plot <- deltaVt_plot+mytheme_paper+
+    theme(legend.position = "inside",
+          legend.position.inside = c(0.03, 0.97),
+          legend.justification = c(0, 1),
+          legend.title = element_text(family = "Helvetica", size = 6, color = "black", margin = margin(b = 3)),
+          legend.key.height = unit(0.25, "cm"),
+          legend.spacing.y = unit(0, "cm")
+          )
   deltaVt_plots_CFS[[specie]] <- deltaVt_plot
   
   ggsave(file.path(folder_path, paste0(base_name, "_", specie,  ".svg")),
