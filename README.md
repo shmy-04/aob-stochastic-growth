@@ -26,4 +26,4 @@ Ikeda S. 2026. *aob-stochastic-growth*. GitHub. (https://github.com/shmy-04/aob-
 
 The analysis and simulation code provided in this repository was developed and used in the following study:
 
-- [Ikeda et al. 2026. *mBio*](https://journals.asm.org/doi/10.1128/mbio.02345-26)
+- [Ikeda et al. 2026. *mBio*](https://doi.org/10.1128/mbio.02345-26)
