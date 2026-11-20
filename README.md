@@ -15,3 +15,15 @@ This repository contains analysis and simulation code used in the manuscript
 
 ## Notes
 Scripts were executed using Python (>=3.11.14) and R (>=4.4.1).
+
+## How to Cite
+
+If you use the analysis or simulation code provided in this repository, please cite:
+
+Ikeda S. 2026. *aob-stochastic-growth*. GitHub. (https://github.com/shmy-04/aob-stochastic-growth)
+
+## Related Publication
+
+The analysis and simulation code provided in this repository was developed and used in the following study:
+
+- [Ikeda et al. 2026. *mBio*](https://journals.asm.org/doi/10.1128/mbio.02345-26)
